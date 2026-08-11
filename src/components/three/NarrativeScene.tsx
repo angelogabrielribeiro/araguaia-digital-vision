@@ -140,13 +140,19 @@ export function NarrativeScene({
 
   return (
     <>
-      <ambientLight intensity={1.4} />
+      <ambientLight intensity={1.9} />
       <directionalLight position={[3, 5, 4]} intensity={3.4} color={accent} />
       <directionalLight position={[-4, -2, -3]} intensity={1.6} color="#ffffff" />
       <pointLight position={[0, 0, 6]} intensity={60} distance={26} color={accent} />
       <DepthField count={reduced ? 320 : 900} radius={14} color={`#${accent.getHexString()}`} reduced={reduced} />
       <instancedMesh ref={mesh} args={[geometry, undefined, COUNT]} frustumCulled={false}>
-        <meshStandardMaterial roughness={0.28} metalness={0.4} toneMapped={false} />
+        <meshStandardMaterial
+          roughness={0.3}
+          metalness={0.15}
+          emissive={accent}
+          emissiveIntensity={0.5}
+          toneMapped={false}
+        />
       </instancedMesh>
     </>
   );
