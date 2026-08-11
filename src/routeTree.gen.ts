@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ContabilidadeRouteImport } from './routes/contabilidade'
+import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as FinancasRouteImport } from './routes/financas'
 import { Route as ManutencaoRouteImport } from './routes/manutencao'
 import { Route as ServicosRouteImport } from './routes/servicos'
+import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TiRouteImport } from './routes/ti'
 
 const IndexRoute = IndexRouteImport.update({
@@ -24,6 +26,11 @@ const IndexRoute = IndexRouteImport.update({
 const ContabilidadeRoute = ContabilidadeRouteImport.update({
   id: '/contabilidade',
   path: '/contabilidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContatoRoute = ContatoRouteImport.update({
+  id: '/contato',
+  path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FinancasRoute = FinancasRouteImport.update({
@@ -41,6 +48,11 @@ const ServicosRoute = ServicosRouteImport.update({
   path: '/servicos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SobreRoute = SobreRouteImport.update({
+  id: '/sobre',
+  path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TiRoute = TiRouteImport.update({
   id: '/ti',
   path: '/ti',
@@ -50,50 +62,75 @@ const TiRoute = TiRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contabilidade': typeof ContabilidadeRoute
+  '/contato': typeof ContatoRoute
   '/financas': typeof FinancasRoute
   '/manutencao': typeof ManutencaoRoute
   '/servicos': typeof ServicosRoute
+  '/sobre': typeof SobreRoute
   '/ti': typeof TiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contabilidade': typeof ContabilidadeRoute
+  '/contato': typeof ContatoRoute
   '/financas': typeof FinancasRoute
   '/manutencao': typeof ManutencaoRoute
   '/servicos': typeof ServicosRoute
+  '/sobre': typeof SobreRoute
   '/ti': typeof TiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contabilidade': typeof ContabilidadeRoute
+  '/contato': typeof ContatoRoute
   '/financas': typeof FinancasRoute
   '/manutencao': typeof ManutencaoRoute
   '/servicos': typeof ServicosRoute
+  '/sobre': typeof SobreRoute
   '/ti': typeof TiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/contabilidade' | '/financas' | '/manutencao' | '/servicos' | '/ti'
+    | '/'
+    | '/contabilidade'
+    | '/contato'
+    | '/financas'
+    | '/manutencao'
+    | '/servicos'
+    | '/sobre'
+    | '/ti'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contabilidade' | '/financas' | '/manutencao' | '/servicos' | '/ti'
+  to:
+    | '/'
+    | '/contabilidade'
+    | '/contato'
+    | '/financas'
+    | '/manutencao'
+    | '/servicos'
+    | '/sobre'
+    | '/ti'
   id:
     | '__root__'
     | '/'
     | '/contabilidade'
+    | '/contato'
     | '/financas'
     | '/manutencao'
     | '/servicos'
+    | '/sobre'
     | '/ti'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContabilidadeRoute: typeof ContabilidadeRoute
+  ContatoRoute: typeof ContatoRoute
   FinancasRoute: typeof FinancasRoute
   ManutencaoRoute: typeof ManutencaoRoute
   ServicosRoute: typeof ServicosRoute
+  SobreRoute: typeof SobreRoute
   TiRoute: typeof TiRoute
 }
 
@@ -111,6 +148,13 @@ declare module '@tanstack/react-router' {
       path: '/contabilidade'
       fullPath: '/contabilidade'
       preLoaderRoute: typeof ContabilidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contato': {
+      id: '/contato'
+      path: '/contato'
+      fullPath: '/contato'
+      preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/financas': {
@@ -134,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sobre': {
+      id: '/sobre'
+      path: '/sobre'
+      fullPath: '/sobre'
+      preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ti': {
       id: '/ti'
       path: '/ti'
@@ -147,9 +198,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContabilidadeRoute: ContabilidadeRoute,
+  ContatoRoute: ContatoRoute,
   FinancasRoute: FinancasRoute,
   ManutencaoRoute: ManutencaoRoute,
   ServicosRoute: ServicosRoute,
+  SobreRoute: SobreRoute,
   TiRoute: TiRoute,
 }
 export const routeTree = rootRouteImport
