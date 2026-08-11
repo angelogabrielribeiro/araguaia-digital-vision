@@ -1,186 +1,250 @@
+import { Environment, Html, OrbitControls, Plane, Sphere } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowRight, X } from "lucide-react";
+import { Suspense, type CSSProperties, useMemo, useRef, useState } from "react";
+import * as THREE from "three";
 
-import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
-import { services } from "@/config/site";
+import { services, type ServiceDef } from "@/config/site";
 import { useReducedMotion } from "@/lib/motion";
 
-/**
- * Deck de cards de serviço em constelação, sobreposto ao cenário 3D.
- * O card em foco é um alvo DOM estável e grande: nada se afasta enquanto
- * o usuário tenta clicar. Setas no desktop, swipe/tap no mobile.
- */
+type CardPosition = {
+  position: [number, number, number];
+  rotationZ: number;
+};
 
-const OFFSETS = [-2, -1, 0, 1, 2] as const;
+const POSITIONS: CardPosition[] = [
+  { position: [-4.6, 2.2, 1.5], rotationZ: -0.07 },
+  { position: [4.5, 1.7, -2.8], rotationZ: 0.05 },
+  { position: [-4.0, -2.3, -3.4], rotationZ: 0.04 },
+  { position: [4.1, -2.0, 1.3], rotationZ: -0.05 },
+  { position: [0.2, 3.6, -5.2], rotationZ: 0.02 },
+];
 
-export function ServiceConstellation() {
-  const reduced = useReducedMotion();
-  const total = services.length;
-  const [active, setActive] = useState(0);
-  const touchX = useRef<number | null>(null);
+function Starfield({ reduced }: { reduced: boolean }) {
+  const ref = useRef<THREE.Points>(null);
+  const geometry = useMemo(() => {
+    const mobile = typeof window !== "undefined" && window.innerWidth < 768;
+    const count = reduced ? 2400 : mobile ? 5200 : 10000;
+    const positions = new Float32Array(count * 3);
 
-  const go = useCallback(
-    (dir: 1 | -1) => setActive((i) => (i + dir + total) % total),
-    [total],
+    for (let i = 0; i < count; i++) {
+      const theta = i * 2.399963229728653;
+      const radius = 12 + ((i * 37) % 1000) / 22;
+      const spreadY = (((i * 91) % 1000) / 1000 - 0.5) * 38;
+      positions[i * 3] = Math.cos(theta) * radius;
+      positions[i * 3 + 1] = spreadY;
+      positions[i * 3 + 2] = Math.sin(theta) * radius;
+    }
+
+    const next = new THREE.BufferGeometry();
+    next.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    return next;
+  }, [reduced]);
+
+  useFrame((_, delta) => {
+    if (!ref.current || reduced) return;
+    ref.current.rotation.y += delta * 0.008;
+    ref.current.rotation.x += delta * 0.0018;
+  });
+
+  return (
+    <points ref={ref} geometry={geometry}>
+      <pointsMaterial color="#dff7ff" size={0.06} transparent opacity={0.72} sizeAttenuation />
+    </points>
   );
+}
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight") go(1);
-      if (e.key === "ArrowLeft") go(-1);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [go]);
+function ServiceCard3D({
+  service,
+  index,
+  cardPosition,
+  onOpen,
+}: {
+  service: ServiceDef;
+  index: number;
+  cardPosition: CardPosition;
+  onOpen: (service: ServiceDef) => void;
+}) {
+  const groupRef = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame(({ camera, clock }) => {
+    if (!groupRef.current) return;
+    groupRef.current.lookAt(camera.position);
+    groupRef.current.position.y =
+      cardPosition.position[1] + Math.sin(clock.elapsedTime * 0.58 + index * 1.2) * 0.16;
+  });
+
+  return (
+    <group
+      ref={groupRef}
+      position={cardPosition.position}
+      rotation={[0, 0, cardPosition.rotationZ]}
+    >
+      <Plane
+        args={[4.8, 5.9]}
+        onClick={(event) => {
+          event.stopPropagation();
+          onOpen(service);
+        }}
+        onPointerOver={(event) => {
+          event.stopPropagation();
+          setHovered(true);
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={(event) => {
+          event.stopPropagation();
+          setHovered(false);
+          document.body.style.cursor = "auto";
+        }}
+      >
+        <meshBasicMaterial transparent opacity={0} />
+      </Plane>
+
+      <Html
+        transform
+        distanceFactor={10}
+        position={[0, 0, 0.01]}
+        style={{
+          pointerEvents: "none",
+          transition: "transform .28s ease, filter .28s ease",
+          transform: hovered ? "scale(1.13)" : "scale(1)",
+          filter: hovered ? "drop-shadow(0 24px 40px rgba(91,199,255,.3))" : "none",
+        }}
+      >
+        <article
+          className="stellar-service-card"
+          style={{ "--service-hue": service.hue } as CSSProperties}
+        >
+          <div className="stellar-service-visual" aria-hidden="true">
+            <span className="stellar-orbit stellar-orbit-a" />
+            <span className="stellar-orbit stellar-orbit-b" />
+            <span className="stellar-core">0{index + 1}</span>
+          </div>
+          <div className="stellar-service-copy">
+            <span>{service.label}</span>
+            <strong>{service.title}</strong>
+            <small>{service.tagline}</small>
+          </div>
+        </article>
+      </Html>
+    </group>
+  );
+}
+
+function GalaxyScene({ reduced, onOpen }: { reduced: boolean; onOpen: (service: ServiceDef) => void }) {
+  return (
+    <>
+      <color attach="background" args={["#010407"]} />
+      <ambientLight intensity={0.55} />
+      <pointLight position={[8, 8, 7]} intensity={38} color="#74d2ff" distance={35} />
+      <pointLight position={[-9, -6, -5]} intensity={26} color="#6be6be" distance={35} />
+      <Environment preset="night" />
+
+      <Starfield reduced={reduced} />
+
+      <Sphere args={[2.1, 32, 32]}>
+        <meshStandardMaterial color="#10233b" transparent opacity={0.16} wireframe />
+      </Sphere>
+      <Sphere args={[7.2, 32, 32]}>
+        <meshStandardMaterial color="#4bc7e3" transparent opacity={0.045} wireframe />
+      </Sphere>
+      <Sphere args={[10.5, 32, 32]}>
+        <meshStandardMaterial color="#4bc7e3" transparent opacity={0.025} wireframe />
+      </Sphere>
+
+      {services.map((service, index) => (
+        <ServiceCard3D
+          key={service.key}
+          service={service}
+          index={index}
+          cardPosition={POSITIONS[index]!}
+          onOpen={onOpen}
+        />
+      ))}
+
+      <OrbitControls
+        enableRotate
+        enablePan
+        enableZoom={false}
+        autoRotate={false}
+        rotateSpeed={0.52}
+        panSpeed={0.68}
+        target={[0, 0, 0]}
+      />
+    </>
+  );
+}
+
+function ServiceModal({ service, onClose }: { service: ServiceDef | null; onClose: () => void }) {
+  if (!service) return null;
 
   return (
     <div
-      className="relative w-full overflow-hidden"
-      onTouchStart={(e) => (touchX.current = e.touches[0]?.clientX ?? null)}
-      onTouchEnd={(e) => {
-        const start = touchX.current;
-        const end = e.changedTouches[0]?.clientX;
-        touchX.current = null;
-        if (start == null || end == null) return;
-        const d = end - start;
-        if (Math.abs(d) > 45) go(d < 0 ? 1 : -1);
+      className="stellar-service-modal-backdrop"
+      onClick={(event) => {
+        if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="relative mx-auto flex h-[420px] max-w-6xl items-center justify-center px-4 sm:h-[440px]">
-        {OFFSETS.map((offset) => {
-          const index = (active + offset + total * 2) % total;
-          const service = services[index]!;
-          const abs = Math.abs(offset);
-          const focused = offset === 0;
-
-          return (
-            <motion.div
-              key={service.key}
-              className="absolute w-[min(88vw,26rem)]"
-              style={{ zIndex: 10 - abs, pointerEvents: focused ? "auto" : "auto" }}
-              animate={{
-                x: offset * (reduced ? 200 : 190),
-                scale: focused ? 1 : abs === 1 ? 0.84 : 0.7,
-                opacity: focused ? 1 : abs === 1 ? 0.5 : 0.18,
-                rotateY: reduced ? 0 : offset * -14,
-                filter: focused ? "blur(0px)" : "blur(2px)",
-              }}
-              transition={{ type: "spring", stiffness: 210, damping: 28 }}
-              aria-hidden={!focused}
-            >
-              {focused ? (
-                <BorderBeamPanel
-                  beams={2}
-                  seed={index + 3}
-                  radius={18}
-                  thickness={1.5}
-                  colors={[
-                    "var(--tech)",
-                    service.hue > 100 && service.hue < 200 ? "var(--signal)" : "var(--clarity)",
-                  ]}
-                  innerClassName="rounded-[17px] bg-background/85 backdrop-blur-xl p-7"
-                >
-                  <span className="font-mono text-[11px] tracking-[0.22em] text-tech uppercase">
-                    0{index + 1} / serviço
-                  </span>
-                  <h3 className="mt-3 font-display text-3xl leading-tight text-foreground">
-                    {service.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                    {service.tagline}
-                  </p>
-                  <ul className="mt-4 space-y-1.5">
-                    {service.items.slice(0, 3).map((it) => (
-                      <li
-                        key={it}
-                        className="flex gap-2 text-[13px] leading-snug text-foreground/80 before:mt-2 before:h-px before:w-3 before:shrink-0 before:bg-tech"
-                      >
-                        {it}
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    to={service.path}
-                    {...(service.hash ? { hash: service.hash } : {})}
-                    className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-tech px-6 py-3.5 text-sm font-medium text-background transition-all hover:brightness-110"
-                  >
-                    Abrir serviço <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </BorderBeamPanel>
-              ) : (
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  onClick={() => setActive(index)}
-                  className="w-full rounded-[18px] border border-border bg-background/70 p-7 text-left backdrop-blur-md"
-                >
-                  <span className="font-mono text-[11px] tracking-[0.22em] text-muted-foreground uppercase">
-                    0{index + 1}
-                  </span>
-                  <h3 className="mt-3 font-display text-2xl leading-tight text-foreground">
-                    {service.title}
-                  </h3>
-                  <p className="mt-3 text-sm text-muted-foreground">{service.tagline}</p>
-                </button>
-              )}
-            </motion.div>
-          );
-        })}
-      </div>
-
-      <div className="mt-2 flex items-center justify-center gap-4">
-        <button
-          type="button"
-          onClick={() => go(-1)}
-          aria-label="Serviço anterior"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur transition-colors hover:border-tech"
-        >
-          <ChevronLeft className="h-5 w-5" />
+      <div className="stellar-service-modal" style={{ "--service-hue": service.hue } as CSSProperties}>
+        <button type="button" onClick={onClose} aria-label="Fechar serviço" className="stellar-service-close">
+          <X className="h-4 w-4" />
         </button>
-
-        <div className="flex items-center gap-2">
-          {services.map((s, i) => (
-            <button
-              key={s.key}
-              type="button"
-              onClick={() => setActive(i)}
-              aria-label={`Ver ${s.label}`}
-              aria-current={i === active}
-              className={`h-2.5 rounded-full transition-all ${
-                i === active ? "w-8 bg-tech" : "w-2.5 bg-border hover:bg-muted-foreground"
-              }`}
-            />
-          ))}
-        </div>
-
-        <button
-          type="button"
-          onClick={() => go(1)}
-          aria-label="Próximo serviço"
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-border bg-background/70 text-foreground backdrop-blur transition-colors hover:border-tech"
-        >
-          <ChevronRight className="h-5 w-5" />
-        </button>
-      </div>
-
-      {/* Faixa auxiliar discreta: acessibilidade e navegação direta */}
-      <nav aria-label="Todos os serviços" className="mt-8">
-        <ul className="mx-auto flex max-w-4xl flex-wrap justify-center gap-x-5 gap-y-2 px-5">
-          {services.map((s) => (
-            <li key={s.key}>
-              <Link
-                to={s.path}
-                {...(s.hash ? { hash: s.hash } : {})}
-                className="font-mono text-[11px] tracking-[0.14em] text-muted-foreground uppercase transition-colors hover:text-tech"
-              >
-                {s.label}
-              </Link>
-            </li>
+        <span className="font-mono text-[10px] tracking-[0.2em] text-tech uppercase">Área de atendimento</span>
+        <h3>{service.title}</h3>
+        <p>{service.summary}</p>
+        <ul>
+          {service.items.slice(0, 4).map((item) => (
+            <li key={item}>{item}</li>
           ))}
         </ul>
-      </nav>
+        <Link
+          to={service.path}
+          {...(service.hash ? { hash: service.hash } : {})}
+          onClick={onClose}
+          className="stellar-service-open"
+        >
+          Abrir serviço <ArrowRight className="h-4 w-4" />
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export function ServiceConstellation() {
+  const reduced = useReducedMotion();
+  const [selected, setSelected] = useState<ServiceDef | null>(null);
+
+  return (
+    <div className="relative h-[760px] w-full overflow-hidden sm:h-[820px] lg:h-[900px]">
+      <Canvas
+        camera={{ position: [0, 0.1, 15], fov: 58, near: 0.1, far: 120 }}
+        dpr={[1, 1.55]}
+        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+      >
+        <Suspense fallback={null}>
+          <GalaxyScene reduced={reduced} onOpen={setSelected} />
+        </Suspense>
+      </Canvas>
+
+      <div className="pointer-events-none absolute inset-x-5 top-5 z-10 sm:top-8 lg:left-8 lg:right-auto lg:w-[430px]">
+        <p className="eyebrow">Mapa espacial de serviços</p>
+        <h3 className="mt-2 font-display text-3xl leading-tight text-foreground sm:text-4xl">
+          Arraste o espaço. Explore a profundidade. Escolha o card.
+        </h3>
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
+          A câmera gira e desloca livremente, mas não aproxima nem afasta. O zoom foi desligado de propósito para não puxar você para o centro da cena.
+        </p>
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-5 bottom-5 z-10 flex justify-center lg:justify-end">
+        <span className="rounded-full border border-white/10 bg-black/45 px-4 py-2 font-mono text-[9px] tracking-[0.16em] text-white/55 uppercase backdrop-blur-md">
+          arraste para olhar · clique nos cards · zoom bloqueado
+        </span>
+      </div>
+
+      <ServiceModal service={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }
