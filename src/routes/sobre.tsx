@@ -86,7 +86,7 @@ function SobrePage() {
           <Reveal className="lg:col-span-5">
             <PortraitSlot />
             <div className="panel mt-4 p-5">
-              <p className="text-sm font-medium text-foreground">{site.professionalName}</p>
+              <p className="text-sm font-medium text-foreground">{displayName}</p>
               <p className="mt-1 text-xs text-muted-foreground">{site.professionalRole}</p>
               <p className="mt-3 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
                 {site.location.city} — {site.location.state}
