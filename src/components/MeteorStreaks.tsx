@@ -67,24 +67,27 @@ export function MeteorStreaks({ className = "" }: { className?: string }) {
       {(reduced ? streaks.slice(0, 2) : streaks).map((s, i) => (
         <span
           key={i}
-          className={reduced ? "absolute" : "absolute motion-safe:animate-meteor-streak"}
-          style={{
-            top: `${s.top}%`,
-            left: reduced ? `${10 + i * 30}%` : undefined,
-            width: `${s.width}vw`,
-            height: `${s.height}px`,
-            opacity: reduced ? s.opacity * 0.5 : s.opacity,
-            transform: `rotate(${s.tilt}deg)`,
-            animationDuration: `${s.duration}s`,
-            animationDelay: `${s.delay}s`,
-            background: `linear-gradient(90deg, transparent 0%, ${TAIL[s.hue]}00 8%, ${
-              TAIL[s.hue]
-            }55 55%, ${TAIL[s.hue]} 96%, #ffffff 100%)`,
-            filter: "blur(0.3px)",
-            boxShadow: `0 0 10px 0 ${TAIL[s.hue]}55`,
-          }}
+          className={reduced ? "absolute" : "absolute animate-meteor-streak"}
+          style={
+            {
+              top: `${s.top}%`,
+              left: reduced ? `${8 + i * 34}%` : 0,
+              width: `${s.width}vw`,
+              height: `${s.height}px`,
+              opacity: reduced ? s.opacity * 0.5 : undefined,
+              transform: reduced ? `rotate(${s.tilt}deg)` : undefined,
+              animationDuration: `${s.duration}s`,
+              animationDelay: `${s.delay}s`,
+              "--streak-tilt": `${s.tilt}deg`,
+              "--streak-opacity": s.opacity,
+              background: `linear-gradient(90deg, transparent 0%, ${TAIL[s.hue]}00 10%, ${TAIL[s.hue]}55 60%, ${TAIL[s.hue]} 96%, #ffffff 100%)`,
+              filter: "blur(0.3px)",
+              boxShadow: `0 0 10px 0 ${TAIL[s.hue]}55`,
+            } as React.CSSProperties
+          }
         />
       ))}
+
     </div>
   );
 }
