@@ -125,7 +125,7 @@ export function NarrativeScene({
       dummy.updateMatrix();
       m.setMatrixAt(i, dummy.matrix);
 
-      const light = 0.42 + smooth * 0.3 + l.tint * 0.14;
+      const light = 0.55 + smooth * 0.2 + l.tint * 0.15;
       tmpColor.setHSL(((hue + (1 - smooth) * 40) % 360) / 360, 0.45 + smooth * 0.35, light);
       m.setColorAt(i, tmpColor);
     }
@@ -150,7 +150,7 @@ export function NarrativeScene({
           roughness={0.3}
           metalness={0.15}
           emissive={accent}
-          emissiveIntensity={0.5}
+          emissiveIntensity={0.75}
           toneMapped={false}
         />
       </instancedMesh>

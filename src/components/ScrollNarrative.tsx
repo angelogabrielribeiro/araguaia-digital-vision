@@ -63,7 +63,7 @@ export function ScrollNarrative({
         >
           <NarrativeScene mode={mode} hue={hue} progressRef={progress} reduced={reduced} />
         </Stage>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/70 via-transparent to-background" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/45 via-transparent to-background/90" />
       </div>
 
       <div className="relative z-10 -mt-[100vh]">
