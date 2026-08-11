@@ -119,7 +119,9 @@ function Home() {
                 message={genericWhatsappMessage}
                 serviceKey="geral"
                 ctaLocation="hero_home"
-              />
+              >
+                Solicitar atendimento
+              </WhatsappCta>
               <Link
                 to="/servicos"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm text-muted-foreground transition-colors hover:border-tech hover:text-foreground"
