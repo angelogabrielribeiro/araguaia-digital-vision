@@ -1,0 +1,191 @@
+/* Experiência espacial dos serviços */
+.stellar-service-link {
+  display: block;
+  width: 164px;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transform: translateZ(0);
+}
+
+.stellar-service-card {
+  --card-accent: var(--service-accent, #6fd8ff);
+  width: 164px;
+  border: 1px solid color-mix(in srgb, var(--card-accent) 38%, rgba(255,255,255,.12));
+  border-radius: 15px;
+  padding: 10px;
+  background:
+    radial-gradient(circle at 35% 12%, color-mix(in srgb, var(--card-accent) 14%, transparent), transparent 46%),
+    linear-gradient(155deg, rgba(11,22,31,.96), rgba(3,8,13,.95));
+  box-shadow: 0 18px 42px rgba(0,0,0,.44), inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter: blur(12px);
+  transition: transform .28s cubic-bezier(.2,.8,.2,1), border-color .28s ease, box-shadow .28s ease;
+  overflow: hidden;
+}
+
+.stellar-service-link:hover .stellar-service-card,
+.stellar-service-link:focus-visible .stellar-service-card {
+  transform: translateY(-5px) scale(1.045);
+  border-color: color-mix(in srgb, var(--card-accent) 72%, white 8%);
+  box-shadow: 0 24px 58px rgba(0,0,0,.58), 0 0 34px color-mix(in srgb, var(--card-accent) 28%, transparent);
+}
+
+.stellar-service-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 126px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.055);
+  border-radius: 11px;
+  background:
+    radial-gradient(circle at center, color-mix(in srgb, var(--card-accent) 18%, transparent), transparent 52%),
+    linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,0));
+}
+
+.stellar-orbit {
+  position: absolute;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--card-accent) 52%, transparent);
+  animation: stellar-orbit 8s linear infinite;
+}
+
+.stellar-orbit-a { width: 88px; height: 88px; transform: rotateX(62deg); }
+.stellar-orbit-b { width: 62px; height: 112px; border-style: dashed; animation-duration: 5.5s; animation-direction: reverse; }
+
+.stellar-core {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  font: 500 10px/1 "IBM Plex Mono", monospace;
+  color: #fff;
+  background: radial-gradient(circle at 35% 30%, #fff 0 2%, var(--card-accent) 8%, #07111b 73%);
+  box-shadow: 0 0 26px color-mix(in srgb, var(--card-accent) 48%, transparent);
+}
+
+.stellar-scan {
+  position: absolute;
+  inset-inline: 0;
+  top: -2px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--card-accent), transparent);
+  opacity: .55;
+  animation: stellar-scan 4.8s ease-in-out infinite;
+}
+
+.stellar-service-copy { padding: 11px 3px 3px; }
+.stellar-service-copy small {
+  display: block;
+  font: 500 7px/1.2 "IBM Plex Mono", monospace;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--card-accent) 78%, #fff 10%);
+}
+.stellar-service-copy strong {
+  display: block;
+  margin-top: 6px;
+  font: 500 15px/1.05 "Space Grotesk", sans-serif;
+  letter-spacing: -.02em;
+  color: #f5fbff;
+}
+.stellar-service-copy > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 9px;
+  font: 500 7px/1 "IBM Plex Mono", monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(225,240,246,.55);
+}
+
+@keyframes stellar-orbit { to { transform: rotate(360deg); } }
+@keyframes stellar-scan {
+  0%,100% { transform: translateY(0); opacity: 0; }
+  18% { opacity: .55; }
+  72% { opacity: .35; }
+  90% { transform: translateY(126px); opacity: 0; }
+}
+
+/* Prova visual do profissional */
+.professional-media-shell {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 22px;
+  background: #081119;
+  box-shadow: 0 34px 90px -42px rgba(30,164,225,.36);
+}
+.professional-media-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent 56%, rgba(3,9,14,.72));
+}
+.professional-media-shell img,
+.professional-media-shell video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.professional-media-shell video { min-height: 420px; }
+.professional-media-kicker {
+  position: absolute;
+  z-index: 2;
+  left: 18px;
+  bottom: 17px;
+  font: 500 8px/1 "IBM Plex Mono", monospace;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(239,248,252,.72);
+}
+.professional-photo-grid {
+  display: grid;
+  grid-template-columns: 1.15fr .85fr;
+  gap: 14px;
+}
+.professional-photo-grid .professional-media-shell:first-child { min-height: 520px; }
+.professional-photo-grid .professional-media-shell:last-child { min-height: 520px; }
+
+/* detalhe animado dos fluxos nas páginas de serviço */
+.service-process-rail {
+  position: relative;
+}
+.service-process-rail::before {
+  content: "";
+  position: absolute;
+  left: 9%;
+  right: 9%;
+  top: 50%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--process-accent, #6fd8ff) 44%, transparent), transparent);
+  opacity: .42;
+  pointer-events: none;
+}
+.service-process-node {
+  position: relative;
+  z-index: 1;
+}
+
+@media (max-width: 700px) {
+  .stellar-service-link { width: 142px; }
+  .stellar-service-card { width: 142px; padding: 8px; }
+  .stellar-service-visual { height: 108px; }
+  .stellar-service-copy strong { font-size: 13px; }
+  .stellar-orbit-a { width: 74px; height: 74px; }
+  .stellar-orbit-b { width: 54px; height: 94px; }
+  .professional-photo-grid { grid-template-columns: 1fr; }
+  .professional-photo-grid .professional-media-shell:first-child,
+  .professional-photo-grid .professional-media-shell:last-child { min-height: 410px; }
+  .service-process-rail::before { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stellar-orbit, .stellar-scan { animation: none !important; }
+}
