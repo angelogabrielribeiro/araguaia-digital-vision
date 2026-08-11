@@ -58,6 +58,8 @@
   --animate-pulse-ring: pulse-ring 3.6s ease-out infinite;
   --animate-rise: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
   --animate-scan: scan 6s linear infinite;
+  --animate-meteor-streak: meteor-streak 10s linear infinite;
+
 }
 
 :root {
@@ -142,6 +144,26 @@
     transform: translateY(400%);
   }
 }
+
+/* feixe de luz atravessando a cena: entra pela esquerda, sai pela direita */
+@keyframes meteor-streak {
+  0% {
+    transform: translateX(-110vw) rotate(var(--streak-tilt, 0deg));
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--streak-opacity, 0.3);
+  }
+  82% {
+    opacity: var(--streak-opacity, 0.3);
+  }
+  100% {
+    transform: translateX(115vw) rotate(var(--streak-tilt, 0deg));
+    opacity: 0;
+  }
+}
+
+
 
 @utility hairline-t {
   border-top: 1px solid var(--hairline);

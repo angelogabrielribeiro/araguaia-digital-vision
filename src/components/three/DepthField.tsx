@@ -11,11 +11,14 @@ export function DepthField({
   radius = 9,
   color = "#8ad4ff",
   reduced = false,
+  parallax = true,
 }: {
   count?: number;
   radius?: number;
   color?: string;
   reduced?: boolean;
+  /** quando false, não mexe na câmera (outro componente cuida disso) */
+  parallax?: boolean;
 }) {
   const points = useRef<THREE.Points>(null);
 
@@ -39,12 +42,14 @@ export function DepthField({
 
   useFrame((state, delta) => {
     if (!points.current) return;
-    points.current.rotation.y += delta * (reduced ? 0.004 : 0.018);
+    points.current.rotation.y += delta * (reduced ? 0.004 : 0.014);
+    if (!parallax) return;
     const { pointer, camera } = state;
     camera.position.x += (pointer.x * 0.7 - camera.position.x) * (reduced ? 0.01 : 0.03);
     camera.position.y += (pointer.y * 0.4 - camera.position.y) * (reduced ? 0.01 : 0.03);
     camera.lookAt(0, 0, 0);
   });
+
 
   return (
     <points ref={points} geometry={geometry}>

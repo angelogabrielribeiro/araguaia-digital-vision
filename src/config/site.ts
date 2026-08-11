@@ -3,57 +3,69 @@
  * ARQUIVO CENTRAL DE CONFIGURAÇÃO
  * Edite APENAS este arquivo para trocar nome, WhatsApp, IDs de
  * analytics, localização, fotos e vídeos.
- * Tudo marcado com [PLACEHOLDER] ainda precisa de dado real.
+ *
+ * Campos vazios ("") NÃO aparecem no site: os componentes escondem
+ * automaticamente o que ainda não foi preenchido. Nenhum texto
+ * técnico ou marcador é exibido para o visitante.
  * ============================================================
  */
 
 export const site = {
-  /** Nome do profissional exibido no site */
-  professionalName: "[PLACEHOLDER: Nome do Profissional]",
+  /** Nome real do profissional. Vazio => usa `brandName` neutro. */
+  professionalName: "",
   /** Título curto abaixo do nome (cargo / atuação) */
   professionalRole: "Tecnologia da Informação • Suporte • Finanças e Contabilidade",
-  /** Nome curto usado no logotipo/navegação */
-  shortName: "[PLACEHOLDER: Nome]",
-  /** E-mail de contato */
-  email: "[PLACEHOLDER: email@dominio.com]",
+  /** Nome curto usado no logotipo/navegação. Vazio => `brandName`. */
+  shortName: "",
+  /** E-mail de contato. Vazio => bloco de e-mail não é renderizado. */
+  email: "",
 
   /**
    * WhatsApp em formato internacional, apenas dígitos.
    * Ex.: 5594999999999 (55 = Brasil, 94 = DDD)
    */
-  whatsappNumber: "5594000000000", // [PLACEHOLDER: número real do WhatsApp]
-  /** Telefone formatado para exibição */
-  phoneDisplay: "[PLACEHOLDER: (94) 90000-0000]",
+  whatsappNumber: "5594000000000",
+  /** Telefone formatado. Vazio => bloco de telefone não é renderizado. */
+  phoneDisplay: "",
 
   location: {
     city: "Conceição do Araguaia",
     state: "PA",
     alsoServes: "Couto Magalhães (TO)",
     remote: "Atendimento remoto para todo o Brasil",
-    /** Horário de atendimento exibido no contato */
-    hours: "[PLACEHOLDER: Seg a Sex, 08h às 18h]",
+    /** Horário de atendimento. Vazio => não é renderizado. */
+    hours: "",
   },
 
   /** IDs de mensuração. Deixe vazio até ter o ID real — nada é carregado sem ele. */
   analytics: {
-    ga4MeasurementId: "", // [PLACEHOLDER: G-XXXXXXXXXX]
-    metaPixelId: "", // [PLACEHOLDER: 000000000000000]
-    googleSearchConsoleVerification: "", // [PLACEHOLDER: conteúdo da meta tag de verificação]
+    ga4MeasurementId: "",
+    metaPixelId: "",
+    googleSearchConsoleVerification: "",
   },
 
-  /** Mídias reais do profissional. Troque os caminhos quando as fotos/vídeos existirem. */
+  /** Mídias reais do profissional. Preencha quando os arquivos existirem. */
   media: {
-    portrait: "", // [PLACEHOLDER: /images/foto-profissional.jpg]
-    workingVideo: "", // [PLACEHOLDER: /videos/trabalhando.mp4]
-    workingVideoPoster: "", // [PLACEHOLDER: /images/video-capa.jpg]
-    gallery: [] as { src: string; alt: string }[], // [PLACEHOLDER: fotos reais de atendimentos]
+    portrait: "",
+    workingVideo: "",
+    workingVideoPoster: "",
+    gallery: [] as { src: string; alt: string }[],
   },
 
   social: {
-    instagram: "", // [PLACEHOLDER: https://instagram.com/...]
-    linkedin: "", // [PLACEHOLDER: https://linkedin.com/in/...]
+    instagram: "",
+    linkedin: "",
   },
 } as const;
+
+/** Assinatura neutra usada enquanto o nome real não estiver configurado. */
+export const brandName = "Atendimento Profissional";
+export const brandTagline = "TI • Finanças • Tributos";
+
+/** Nome exibido em UI e structured data (nunca vazio). */
+export const displayName = site.professionalName || brandName;
+export const displayShortName = site.shortName || site.professionalName || brandName;
+
 
 export type ServiceKey = "ti" | "manutencao" | "software" | "financas" | "contabilidade";
 

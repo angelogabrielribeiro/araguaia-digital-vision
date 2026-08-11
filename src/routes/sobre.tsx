@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Camera, Play } from "lucide-react";
 
 import { Reveal, RevealLines } from "@/components/Reveal";
 import { WhatsappCta } from "@/components/WhatsappCta";
 import { AtmospherePlane } from "@/components/three/AtmospherePlane";
 import { Stage } from "@/components/three/Stage";
-import { genericWhatsappMessage, site } from "@/config/site";
+import { displayName, genericWhatsappMessage, site } from "@/config/site";
 import { useReducedMotion } from "@/lib/motion";
+
+const hasMedia = Boolean(site.media.workingVideo) || site.media.gallery.length > 0;
+
 
 export const Route = createFileRoute("/sobre")({
   head: () => ({
@@ -32,58 +34,34 @@ export const Route = createFileRoute("/sobre")({
   component: SobrePage,
 });
 
-/** Espaço reservado para foto real — troque em src/config/site.ts */
+/** Foto real do profissional — quando não houver, nada é exibido. */
 function PortraitSlot() {
-  if (site.media.portrait) {
-    return (
-      <img
-        src={site.media.portrait}
-        alt={`Foto de ${site.professionalName}`}
-        loading="lazy"
-        className="h-full w-full rounded-xl object-cover"
-      />
-    );
-  }
+  if (!site.media.portrait) return null;
   return (
-    <div className="flex aspect-4/5 w-full flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface/60 p-6 text-center">
-      <Camera className="h-6 w-6 text-muted-foreground" aria-hidden />
-      <p className="mt-3 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-        [Placeholder] Foto do profissional
-      </p>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Retrato vertical, boa iluminação. Defina o caminho em <code>media.portrait</code>.
-      </p>
-    </div>
+    <img
+      src={site.media.portrait}
+      alt={`Foto de ${displayName}`}
+      loading="lazy"
+      className="h-full w-full rounded-xl object-cover"
+    />
   );
 }
 
-/** Espaço reservado para vídeo real do profissional trabalhando */
+/** Vídeo real do profissional — quando não houver, nada é exibido. */
 function VideoSlot() {
-  if (site.media.workingVideo) {
-    return (
-      <video
-        src={site.media.workingVideo}
-        poster={site.media.workingVideoPoster || undefined}
-        controls
-        playsInline
-        preload="none"
-        className="aspect-video w-full rounded-xl object-cover"
-      />
-    );
-  }
+  if (!site.media.workingVideo) return null;
   return (
-    <div className="flex aspect-video w-full flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface/60 p-6 text-center">
-      <Play className="h-6 w-6 text-muted-foreground" aria-hidden />
-      <p className="mt-3 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-        [Placeholder] Vídeo do profissional trabalhando
-      </p>
-      <p className="mt-2 max-w-sm text-xs text-muted-foreground">
-        Vídeo curto, horizontal, mostrando um atendimento real. Defina o caminho em{" "}
-        <code>media.workingVideo</code>.
-      </p>
-    </div>
+    <video
+      src={site.media.workingVideo}
+      poster={site.media.workingVideoPoster || undefined}
+      controls
+      playsInline
+      preload="none"
+      className="aspect-video w-full rounded-xl object-cover"
+    />
   );
 }
+
 
 function SobrePage() {
   const reduced = useReducedMotion();
@@ -108,7 +86,7 @@ function SobrePage() {
           <Reveal className="lg:col-span-5">
             <PortraitSlot />
             <div className="panel mt-4 p-5">
-              <p className="text-sm font-medium text-foreground">{site.professionalName}</p>
+              <p className="text-sm font-medium text-foreground">{displayName}</p>
               <p className="mt-1 text-xs text-muted-foreground">{site.professionalRole}</p>
               <p className="mt-3 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
                 {site.location.city} — {site.location.state}
@@ -157,45 +135,36 @@ function SobrePage() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-surface/30 py-16 lg:py-24">
-        <div className="mx-auto max-w-5xl px-5 lg:px-8">
-          <Reveal>
-            <p className="eyebrow">Bastidor do trabalho</p>
-            <h2 className="mt-3 font-display text-3xl leading-tight text-foreground lg:text-4xl">
-              Um pouco de como o atendimento acontece.
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1} className="mt-8">
-            <VideoSlot />
-          </Reveal>
+      {hasMedia && (
+        <section className="border-t border-border bg-surface/30 py-16 lg:py-24">
+          <div className="mx-auto max-w-5xl px-5 lg:px-8">
+            <Reveal>
+              <p className="eyebrow">Bastidor do trabalho</p>
+              <h2 className="mt-3 font-display text-3xl leading-tight text-foreground lg:text-4xl">
+                Um pouco de como o atendimento acontece.
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1} className="mt-8">
+              <VideoSlot />
+            </Reveal>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {(site.media.gallery.length
-              ? site.media.gallery
-              : ([1, 2, 3] as const).map(() => null)
-            ).map((item, i) =>
-              item ? (
-                <img
-                  key={item.src}
-                  src={item.src}
-                  alt={item.alt}
-                  loading="lazy"
-                  className="aspect-4/3 w-full rounded-lg object-cover"
-                />
-              ) : (
-                <div
-                  key={i}
-                  className="flex aspect-4/3 w-full items-center justify-center rounded-lg border border-dashed border-border bg-background/50 p-4 text-center"
-                >
-                  <p className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-                    [Placeholder] Foto {i + 1}
-                  </p>
-                </div>
-              ),
+            {site.media.gallery.length > 0 && (
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {site.media.gallery.map((item) => (
+                  <img
+                    key={item.src}
+                    src={item.src}
+                    alt={item.alt}
+                    loading="lazy"
+                    className="aspect-4/3 w-full rounded-lg object-cover"
+                  />
+                ))}
+              </div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
 
       <section className="py-20 text-center lg:py-28">
         <div className="mx-auto max-w-2xl px-5">

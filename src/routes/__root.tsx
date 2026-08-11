@@ -14,7 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { site } from "@/config/site";
+import { displayName, site } from "@/config/site";
 import { captureUtms, initAnalytics, trackPageView } from "@/lib/analytics";
 
 
@@ -83,15 +83,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${site.professionalName} — TI, manutenção, finanças e contabilidade` },
+      { title: `${displayName} — TI, manutenção, finanças e contabilidade` },
       {
         name: "description",
         content:
           "Serviços de TI, suporte técnico, manutenção tecnológica, finanças e contabilidade em Conceição do Araguaia (PA).",
       },
-      { name: "author", content: site.professionalName },
+      { name: "author", content: displayName },
       { name: "theme-color", content: "#0b1420" },
-      { property: "og:site_name", content: site.professionalName },
+      { property: "og:site_name", content: displayName },
       { property: "og:locale", content: "pt_BR" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
