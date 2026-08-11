@@ -149,61 +149,36 @@ function Home() {
         </div>
       </section>
 
-      {/* ESPAÇO 3D EXPLORÁVEL DE SERVIÇOS */}
-      <section className="relative border-t border-border">
-        <div className="mx-auto max-w-7xl px-5 pt-20 lg:px-8">
+      {/* SERVIÇOS — cenário 3D estável + deck de cards clicáveis em DOM */}
+      <section className="relative overflow-hidden border-t border-border">
+        <div className="relative mx-auto max-w-7xl px-5 pt-20 lg:px-8">
           <Reveal>
             <p className="eyebrow">Áreas de atuação</p>
             <h2 className="mt-3 max-w-2xl font-display text-4xl leading-tight text-foreground lg:text-6xl">
               Cinco frentes, um único ponto de contato.
             </h2>
             <p className="mt-4 max-w-xl text-sm text-muted-foreground lg:text-base">
-              Arraste para explorar o espaço e toque em uma área para abrir os detalhes.
+              Navegue entre os cards e abra o serviço que resolve o seu caso.
             </p>
           </Reveal>
         </div>
 
-        <Stage
-          className="h-[78vh] min-h-[520px] w-full touch-none"
-          cameraPosition={[0, 0.6, 12]}
-          fov={46}
-        >
-          <ServiceSpace
-            reduced={reduced}
-            onSelect={(i) => {
-              const s = services[i];
-              if (!s) return;
-              navigate({ to: s.path, ...(s.hash ? { hash: s.hash } : {}) });
-            }}
-          />
-        </Stage>
-
-        <div className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">
-          <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-2 lg:grid-cols-3">
-            {services.map((s, i) => (
-              <Reveal key={s.key} delay={i * 0.04} className="h-full">
-                <Link
-                  to={s.path}
-                  {...(s.hash ? { hash: s.hash } : {})}
-                  className="group flex h-full flex-col justify-between bg-background p-6 transition-colors hover:bg-surface"
-                >
-                  <div>
-                    <span className="font-mono text-[11px] text-tech">0{i + 1}</span>
-                    <h3 className="mt-3 text-xl text-foreground">{s.label}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      {s.tagline}
-                    </p>
-                  </div>
-                  <span className="mt-6 inline-flex items-center gap-2 text-sm text-tech">
-                    Ver detalhes
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
+        <div className="relative mt-10 pb-20">
+          <Stage
+            className="pointer-events-none absolute inset-0"
+            cameraPosition={[0, 0.6, 12]}
+            fov={46}
+            fallbackClassName="bg-transparent"
+          >
+            <ServiceSpace reduced={reduced} />
+          </Stage>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/60 via-background/10 to-background/80" />
+          <div className="relative">
+            <ServiceConstellation />
           </div>
         </div>
       </section>
+
 
       {/* ATENDIMENTO */}
       <section className="border-t border-border bg-surface/30 py-20 lg:py-28">
