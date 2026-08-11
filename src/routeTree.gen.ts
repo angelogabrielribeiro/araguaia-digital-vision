@@ -10,33 +10,73 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ContabilidadeRouteImport } from './routes/contabilidade'
+import { Route as FinancasRouteImport } from './routes/financas'
+import { Route as ManutencaoRouteImport } from './routes/manutencao'
+import { Route as TiRouteImport } from './routes/ti'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContabilidadeRoute = ContabilidadeRouteImport.update({
+  id: '/contabilidade',
+  path: '/contabilidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FinancasRoute = FinancasRouteImport.update({
+  id: '/financas',
+  path: '/financas',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManutencaoRoute = ManutencaoRouteImport.update({
+  id: '/manutencao',
+  path: '/manutencao',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TiRoute = TiRouteImport.update({
+  id: '/ti',
+  path: '/ti',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/contabilidade': typeof ContabilidadeRoute
+  '/financas': typeof FinancasRoute
+  '/manutencao': typeof ManutencaoRoute
+  '/ti': typeof TiRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/contabilidade': typeof ContabilidadeRoute
+  '/financas': typeof FinancasRoute
+  '/manutencao': typeof ManutencaoRoute
+  '/ti': typeof TiRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/contabilidade': typeof ContabilidadeRoute
+  '/financas': typeof FinancasRoute
+  '/manutencao': typeof ManutencaoRoute
+  '/ti': typeof TiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/contabilidade' | '/financas' | '/manutencao' | '/ti'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/contabilidade' | '/financas' | '/manutencao' | '/ti'
+  id: '__root__' | '/' | '/contabilidade' | '/financas' | '/manutencao' | '/ti'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ContabilidadeRoute: typeof ContabilidadeRoute
+  FinancasRoute: typeof FinancasRoute
+  ManutencaoRoute: typeof ManutencaoRoute
+  TiRoute: typeof TiRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +88,44 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contabilidade': {
+      id: '/contabilidade'
+      path: '/contabilidade'
+      fullPath: '/contabilidade'
+      preLoaderRoute: typeof ContabilidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/financas': {
+      id: '/financas'
+      path: '/financas'
+      fullPath: '/financas'
+      preLoaderRoute: typeof FinancasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manutencao': {
+      id: '/manutencao'
+      path: '/manutencao'
+      fullPath: '/manutencao'
+      preLoaderRoute: typeof ManutencaoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ti': {
+      id: '/ti'
+      path: '/ti'
+      fullPath: '/ti'
+      preLoaderRoute: typeof TiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ContabilidadeRoute: ContabilidadeRoute,
+  FinancasRoute: FinancasRoute,
+  ManutencaoRoute: ManutencaoRoute,
+  TiRoute: TiRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
