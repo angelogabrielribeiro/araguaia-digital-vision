@@ -11,12 +11,12 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import stellarCss from "../stellar.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { displayName, site } from "@/config/site";
 import { captureUtms, initAnalytics, trackPageView } from "@/lib/analytics";
-
 
 function NotFoundComponent() {
   return (
@@ -95,7 +95,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:locale", content: "pt_BR" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      // Verificação do Google Search Console (preenchida em src/config/site.ts)
       ...(site.analytics.googleSearchConsoleVerification
         ? [
             {
@@ -107,6 +106,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: stellarCss },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -153,11 +153,9 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <SiteHeader />
       <main id="conteudo">
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
         <Outlet />
       </main>
       <SiteFooter />
     </QueryClientProvider>
   );
 }
-
