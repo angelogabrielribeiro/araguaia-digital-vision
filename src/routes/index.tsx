@@ -84,15 +84,15 @@ const PILLARS = [
 
 function Home() {
   const reduced = useReducedMotion();
-  const navigate = useNavigate();
 
   return (
     <>
-      {/* HERO — atmosfera procedural */}
+      {/* HERO — atmosfera procedural + feixes de luz */}
       <section className="relative flex min-h-[100svh] items-center overflow-hidden">
         <Stage className="absolute inset-0" cameraPosition={[0, 0, 6]}>
           <AtmospherePlane hue={214} intensity={1} reduced={reduced} />
         </Stage>
+        <MeteorStreaks />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/80 via-background/25 to-background" />
 
         <div className="relative mx-auto w-full max-w-7xl px-5 pt-28 pb-20 lg:px-8">
@@ -111,9 +111,10 @@ function Home() {
 
           <Reveal delay={0.35} className="mt-7 max-w-xl">
             <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
-              Sou {site.professionalName}. Trabalho com TI, suporte técnico e manutenção de
-              equipamentos, e também com finanças, contabilidade e impostos. Atendimento presencial em {site.location.city} ({site.location.state}) e{" "}
-              {site.location.alsoServes}, com suporte remoto quando o serviço permite.
+              Atendimento profissional em TI, suporte técnico, manutenção de equipamentos,
+              finanças, contabilidade e impostos. Presencial em {site.location.city} (
+              {site.location.state}) e {site.location.alsoServes}, com suporte remoto quando o
+              serviço permite.
             </p>
           </Reveal>
 
@@ -136,18 +137,38 @@ function Home() {
           </Reveal>
 
           <Reveal delay={0.7} className="mt-16">
-            <div className="grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-3">
-              {PILLARS.map((p) => (
-                <div key={p.title} className="bg-background/70 p-6 backdrop-blur">
-                  <p.icon className="h-4 w-4 text-tech" aria-hidden />
-                  <h2 className="mt-4 text-sm font-medium text-foreground">{p.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
-                </div>
-              ))}
+            <div className="grid gap-4 sm:grid-cols-3">
+              {PILLARS.map((p, i) =>
+                i === 0 ? (
+                  <BorderBeamPanel
+                    key={p.title}
+                    beams={1}
+                    seed={11}
+                    radius={14}
+                    glow={false}
+                    colors={["var(--tech)"]}
+                    innerClassName="rounded-[13px] bg-background/70 p-6 backdrop-blur"
+                  >
+                    <p.icon className="h-4 w-4 text-tech" aria-hidden />
+                    <h2 className="mt-4 text-sm font-medium text-foreground">{p.title}</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                  </BorderBeamPanel>
+                ) : (
+                  <div
+                    key={p.title}
+                    className="rounded-[14px] border border-border bg-background/70 p-6 backdrop-blur"
+                  >
+                    <p.icon className="h-4 w-4 text-tech" aria-hidden />
+                    <h2 className="mt-4 text-sm font-medium text-foreground">{p.title}</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+                  </div>
+                ),
+              )}
             </div>
           </Reveal>
         </div>
       </section>
+
 
       {/* SERVIÇOS — cenário 3D estável + deck de cards clicáveis em DOM */}
       <section className="relative overflow-hidden border-t border-border">
