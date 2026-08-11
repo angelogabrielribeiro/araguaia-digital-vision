@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
+import { type CSSProperties } from "react";
 
 import { MeteorStreaks } from "@/components/MeteorStreaks";
 import { Reveal, RevealLines } from "@/components/Reveal";
@@ -32,6 +33,10 @@ export function ServicePage({ service, mode, narrativeLabel, steps, process, faq
           <AtmospherePlane hue={service.hue} intensity={0.98} reduced={reduced} />
         </Stage>
         <MeteorStreaks />
+        <div
+          className="pointer-events-none absolute -right-32 top-1/4 h-96 w-96 rounded-full blur-3xl"
+          style={{ background: `color-mix(in srgb, ${service.accent} 14%, transparent)` }}
+        />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/34 to-background/64" />
 
         <div className="relative mx-auto w-full max-w-7xl px-5 pt-32 pb-16 lg:px-8 lg:pb-24">
@@ -61,8 +66,12 @@ export function ServicePage({ service, mode, narrativeLabel, steps, process, faq
 
       <ScrollNarrative mode={mode} hue={service.hue} steps={steps} label={narrativeLabel} />
 
-      <section className="relative border-t border-border bg-surface/30 py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+      <section className="relative overflow-hidden border-t border-border bg-surface/30 py-20 lg:py-28">
+        <div
+          className="pointer-events-none absolute -left-32 top-16 h-80 w-80 rounded-full blur-3xl"
+          style={{ background: `color-mix(in srgb, ${service.accent} 9%, transparent)` }}
+        />
+        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
           <Reveal>
             <p className="eyebrow">O que entra nesse atendimento</p>
             <h2 className="mt-3 max-w-2xl font-display text-4xl leading-tight text-foreground lg:text-5xl">
@@ -70,7 +79,10 @@ export function ServicePage({ service, mode, narrativeLabel, steps, process, faq
             </h2>
           </Reveal>
 
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul
+            className="mt-12 grid gap-4"
+            style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 250px), 1fr))" }}
+          >
             {service.items.map((item, i) => (
               <li key={item} className="min-w-0">
                 <Reveal delay={i * 0.05} className="h-full">
@@ -79,12 +91,12 @@ export function ServicePage({ service, mode, narrativeLabel, steps, process, faq
                     seed={i + 21}
                     radius={16}
                     thickness={1.25}
-                    glow={false}
+                    glow={i % 2 === 0}
                     colors={[service.accent, i % 2 === 0 ? "#ffffff" : "#8aa4ad"]}
-                    innerClassName="group h-full min-h-[150px] rounded-[15px] bg-background/90 p-6 transition-transform duration-300 hover:-translate-y-1"
+                    innerClassName="group h-full min-h-[150px] rounded-[15px] bg-background/90 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:bg-surface/90"
                   >
                     <span className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground">0{i + 1}</span>
-                    <Check className="mt-5 h-4 w-4" style={{ color: service.accent }} aria-hidden />
+                    <Check className="mt-5 h-4 w-4 transition-transform duration-300 group-hover:scale-125" style={{ color: service.accent }} aria-hidden />
                     <p className="mt-4 text-sm leading-relaxed text-foreground/90">{item}</p>
                   </BorderBeamPanel>
                 </Reveal>
@@ -94,23 +106,39 @@ export function ServicePage({ service, mode, narrativeLabel, steps, process, faq
         </div>
       </section>
 
-      <section className="py-20 lg:py-28">
-        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+      <section className="relative overflow-hidden py-20 lg:py-28">
+        <div className="pointer-events-none absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(255,255,255,.025)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.025)_1px,transparent_1px)] [background-size:48px_48px]" />
+        <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
           <Reveal>
             <p className="eyebrow">Como funciona</p>
             <h2 className="mt-3 max-w-2xl font-display text-4xl leading-tight text-foreground lg:text-5xl">
               Do primeiro contato até o problema resolvido.
             </h2>
           </Reveal>
-          <ol className="mt-12 grid gap-6 md:grid-cols-3">
+          <ol
+            className="service-process-rail mt-12 grid gap-6 md:grid-cols-3"
+            style={{ "--process-accent": service.accent } as CSSProperties}
+          >
             {process.map((p, i) => (
-              <li key={p.title}>
+              <li key={p.title} className="service-process-node">
                 <Reveal delay={i * 0.08} className="h-full">
-                  <div className="panel h-full p-6 transition-transform duration-300 hover:-translate-y-1.5">
+                  <BorderBeamPanel
+                    beams={1}
+                    seed={40 + i}
+                    radius={16}
+                    thickness={1.2}
+                    glow={false}
+                    colors={[service.accent]}
+                    innerClassName="group h-full min-h-[190px] rounded-[15px] bg-background/92 p-6 backdrop-blur transition-transform duration-300 hover:-translate-y-2"
+                  >
                     <span className="font-mono text-xs" style={{ color: service.accent }}>0{i + 1}</span>
-                    <h3 className="mt-3 text-lg text-foreground">{p.title}</h3>
+                    <div
+                      className="mt-5 h-px w-10 origin-left transition-transform duration-500 group-hover:scale-x-150"
+                      style={{ background: service.accent }}
+                    />
+                    <h3 className="mt-5 text-lg text-foreground">{p.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
-                  </div>
+                  </BorderBeamPanel>
                 </Reveal>
               </li>
             ))}
