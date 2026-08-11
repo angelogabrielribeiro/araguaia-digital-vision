@@ -92,6 +92,8 @@ export function BorderBeamPanel({
     let last = performance.now();
     const angles = Array.from({ length: beams }, (_, i) => seededPhase(seed, i));
     const speeds = Array.from({ length: beams }, () => IDLE_SPEED);
+    const accels = Array.from({ length: beams }, () => 0);
+
 
     const io = pauseWhenHidden
       ? new IntersectionObserver((es) => {
