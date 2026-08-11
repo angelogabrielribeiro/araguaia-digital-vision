@@ -44,10 +44,11 @@ function buildStreaks(count: number): Streak[] {
 }
 
 const TAIL: Record<Streak["hue"], string> = {
-  cyan: "color-mix(in oklab, var(--tech) 85%, white)",
+  cyan: "#7fd6ff",
   white: "#ffffff",
-  amber: "color-mix(in oklab, var(--clarity, #e6b25a) 90%, white)",
+  amber: "#e8c07a",
 };
+
 
 export function MeteorStreaks({ className = "" }: { className?: string }) {
   const reduced = useReducedMotion();
