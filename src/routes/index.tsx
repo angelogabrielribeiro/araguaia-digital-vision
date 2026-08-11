@@ -108,8 +108,8 @@ function Home() {
           <Reveal delay={0.35} className="mt-7 max-w-xl">
             <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
               Sou {site.professionalName}. Trabalho com TI, suporte técnico e manutenção de
-              equipamentos, e também com finanças, contabilidade e impostos. Atendo presencialmente
-              na região e remotamente quando o serviço permite.
+              equipamentos, e também com finanças, contabilidade e impostos. Atendimento presencial em {site.location.city} ({site.location.state}) e{" "}
+              {site.location.alsoServes}, com suporte remoto quando o serviço permite.
             </p>
           </Reveal>
 
