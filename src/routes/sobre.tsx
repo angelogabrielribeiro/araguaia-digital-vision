@@ -32,58 +32,34 @@ export const Route = createFileRoute("/sobre")({
   component: SobrePage,
 });
 
-/** Espaço reservado para foto real — troque em src/config/site.ts */
+/** Foto real do profissional — quando não houver, nada é exibido. */
 function PortraitSlot() {
-  if (site.media.portrait) {
-    return (
-      <img
-        src={site.media.portrait}
-        alt={`Foto de ${site.professionalName}`}
-        loading="lazy"
-        className="h-full w-full rounded-xl object-cover"
-      />
-    );
-  }
+  if (!site.media.portrait) return null;
   return (
-    <div className="flex aspect-4/5 w-full flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface/60 p-6 text-center">
-      <Camera className="h-6 w-6 text-muted-foreground" aria-hidden />
-      <p className="mt-3 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-        [Placeholder] Foto do profissional
-      </p>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Retrato vertical, boa iluminação. Defina o caminho em <code>media.portrait</code>.
-      </p>
-    </div>
+    <img
+      src={site.media.portrait}
+      alt={`Foto de ${displayName}`}
+      loading="lazy"
+      className="h-full w-full rounded-xl object-cover"
+    />
   );
 }
 
-/** Espaço reservado para vídeo real do profissional trabalhando */
+/** Vídeo real do profissional — quando não houver, nada é exibido. */
 function VideoSlot() {
-  if (site.media.workingVideo) {
-    return (
-      <video
-        src={site.media.workingVideo}
-        poster={site.media.workingVideoPoster || undefined}
-        controls
-        playsInline
-        preload="none"
-        className="aspect-video w-full rounded-xl object-cover"
-      />
-    );
-  }
+  if (!site.media.workingVideo) return null;
   return (
-    <div className="flex aspect-video w-full flex-col items-center justify-center rounded-xl border border-dashed border-border bg-surface/60 p-6 text-center">
-      <Play className="h-6 w-6 text-muted-foreground" aria-hidden />
-      <p className="mt-3 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
-        [Placeholder] Vídeo do profissional trabalhando
-      </p>
-      <p className="mt-2 max-w-sm text-xs text-muted-foreground">
-        Vídeo curto, horizontal, mostrando um atendimento real. Defina o caminho em{" "}
-        <code>media.workingVideo</code>.
-      </p>
-    </div>
+    <video
+      src={site.media.workingVideo}
+      poster={site.media.workingVideoPoster || undefined}
+      controls
+      playsInline
+      preload="none"
+      className="aspect-video w-full rounded-xl object-cover"
+    />
   );
 }
+
 
 function SobrePage() {
   const reduced = useReducedMotion();
