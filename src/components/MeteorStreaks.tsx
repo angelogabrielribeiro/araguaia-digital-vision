@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 
 import { useHydrated, useReducedMotion } from "@/lib/motion";
 import { useIsMobile } from "@/hooks/use-mobile";
