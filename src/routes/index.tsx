@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Laptop, MapPin, Monitor, Wrench } from "lucide-react";
 
 import { Reveal, RevealLines } from "@/components/Reveal";
@@ -80,6 +80,7 @@ const PILLARS = [
 
 function Home() {
   const reduced = useReducedMotion();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -161,7 +162,14 @@ function Home() {
           cameraPosition={[0, 0.6, 9]}
           fov={52}
         >
-          <ServiceSpace reduced={reduced} />
+          <ServiceSpace
+            reduced={reduced}
+            onSelect={(i) => {
+              const s = services[i];
+              if (!s) return;
+              navigate({ to: s.path, ...(s.hash ? { hash: s.hash } : {}) });
+            }}
+          />
         </Stage>
 
         <div className="mx-auto max-w-7xl px-5 pb-20 lg:px-8">

@@ -1,6 +1,5 @@
 import { Billboard, Html, OrbitControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
-import { Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
@@ -78,10 +77,12 @@ function ServiceNode({
   position,
   index,
   reduced,
+  onSelect,
 }: {
   position: [number, number, number];
   index: number;
   reduced: boolean;
+  onSelect: (index: number) => void;
 }) {
   const service = services[index]!;
   const [hovered, setHovered] = useState(false);
@@ -126,9 +127,12 @@ function ServiceNode({
           zIndexRange={[20, 0]}
           style={{ pointerEvents: "auto" }}
         >
-          <Link
-            to={service.path}
-            {...(service.hash ? { hash: service.hash } : {})}
+          <a
+            href={service.hash ? `${service.path}#${service.hash}` : service.path}
+            onClick={(e) => {
+              e.preventDefault();
+              onSelect(index);
+            }}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
             className="block w-52 rounded-lg border border-border bg-background/85 px-3 py-2 text-center backdrop-blur transition-colors hover:border-primary/70"
@@ -140,14 +144,22 @@ function ServiceNode({
             <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
               {service.tagline}
             </span>
-          </Link>
+          </a>
         </Html>
       </Billboard>
     </group>
   );
 }
 
-export function ServiceSpace({ reduced = false }: { reduced?: boolean }) {
+export function ServiceSpace({
+  reduced = false,
+  onSelect,
+}: {
+  reduced?: boolean;
+  /** Navegação é resolvida fora do Canvas: o R3F usa outro reconciliador
+      e não enxerga o contexto do router. */
+  onSelect: (index: number) => void;
+}) {
   return (
     <>
       <ambientLight intensity={0.6} />
@@ -157,7 +169,7 @@ export function ServiceSpace({ reduced = false }: { reduced?: boolean }) {
       <Core reduced={reduced} />
       <Connections reduced={reduced} />
       {NODE_POSITIONS.map((p, i) => (
-        <ServiceNode key={i} position={p} index={i} reduced={reduced} />
+        <ServiceNode key={i} position={p} index={i} reduced={reduced} onSelect={onSelect} />
       ))}
       <OrbitControls
         enableZoom={false}
