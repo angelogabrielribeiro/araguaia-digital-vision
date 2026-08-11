@@ -113,16 +113,14 @@ export function BorderBeamPanel({
       if (visibleRef.current && !document.hidden) {
         const target = hoverRef.current ? HOVER_SPEED : IDLE_SPEED;
         for (let i = 0; i < beams; i++) {
-          // mola crítica na VELOCIDADE: aceleração proporcional ao erro
-          const v = speeds[i]!;
-          const accel = (target - v) * stiffness - v * 0 - (v - target) * 0;
-          const next = v + (accel - damping * (v - target) * 0) * dt;
-          // integração simples e estável (stiffness/damping normalizados)
-          const smoothed = v + (next - v) * Math.min(1, (stiffness / damping) * dt);
-          speeds[i] = smoothed;
-          angles[i] = (angles[i]! + smoothed * dt * (i % 2 === 0 ? 1 : -1)) % 360;
+          // mola de 2ª ordem aplicada à VELOCIDADE angular (não ao ângulo)
+          const accel = stiffness * (target - speeds[i]!) - damping * accels[i]!;
+          accels[i] = accels[i]! + accel * dt;
+          speeds[i] = speeds[i]! + accels[i]! * dt;
+          angles[i] = (angles[i]! + speeds[i]! * dt * (i % 2 === 0 ? 1 : -1) + 360) % 360;
           const el = layerRefs.current[i];
           if (el) el.style.setProperty("--beam-angle", `${angles[i]!.toFixed(2)}deg`);
+
         }
       }
       raf = requestAnimationFrame(tick);
