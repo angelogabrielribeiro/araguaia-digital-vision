@@ -1,12 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Camera, Play } from "lucide-react";
 
 import { Reveal, RevealLines } from "@/components/Reveal";
 import { WhatsappCta } from "@/components/WhatsappCta";
 import { AtmospherePlane } from "@/components/three/AtmospherePlane";
 import { Stage } from "@/components/three/Stage";
-import { genericWhatsappMessage, site } from "@/config/site";
+import { displayName, genericWhatsappMessage, site } from "@/config/site";
 import { useReducedMotion } from "@/lib/motion";
+
+const hasMedia = Boolean(site.media.workingVideo) || site.media.gallery.length > 0;
+
 
 export const Route = createFileRoute("/sobre")({
   head: () => ({
