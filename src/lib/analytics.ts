@@ -21,16 +21,19 @@ export function initAnalytics() {
 
   const ga4 = site.analytics.ga4MeasurementId;
   if (ga4) {
-    const s = document.createElement("script");
-    s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${ga4}`;
-    document.head.appendChild(s);
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${ga4}`;
+    document.head.appendChild(script);
+
     window.dataLayer = window.dataLayer || [];
     window.gtag = function gtag(...args: unknown[]) {
       window.dataLayer!.push(args);
     };
     window.gtag("js", new Date());
-    window.gtag("config", ga4, { send_page_view: true });
+    // O roteador envia todos os pageviews, inclusive o primeiro. Desligar o envio
+    // automático aqui evita contabilizar a primeira visita duas vezes.
+    window.gtag("config", ga4, { send_page_view: false });
   }
 
   const pixel = site.analytics.metaPixelId;
@@ -43,12 +46,11 @@ export function initAnalytics() {
     n.loaded = true;
     n.version = "2.0";
     window._fbq = n;
-    const s = document.createElement("script");
-    s.async = true;
-    s.src = "https://connect.facebook.net/en_US/fbevents.js";
-    document.head.appendChild(s);
+    const script = document.createElement("script");
+    script.async = true;
+    script.src = "https://connect.facebook.net/en_US/fbevents.js";
+    document.head.appendChild(script);
     window.fbq!("init", pixel);
-    window.fbq!("track", "PageView");
     /* eslint-enable @typescript-eslint/no-explicit-any */
   }
 }
@@ -56,7 +58,12 @@ export function initAnalytics() {
 /** Pageview em navegação SPA (client-side routing). */
 export function trackPageView(path: string) {
   if (typeof window === "undefined") return;
-  window.gtag?.("event", "page_view", { page_path: path, page_location: window.location.href });
+  const payload = {
+    page_path: path,
+    page_location: window.location.href,
+    page_title: document.title,
+  };
+  window.gtag?.("event", "page_view", payload);
   window.fbq?.("track", "PageView");
 }
 
@@ -67,15 +74,15 @@ export function captureUtms() {
   if (typeof window === "undefined") return;
   const params = new URLSearchParams(window.location.search);
   const found: Record<string, string> = {};
-  for (const k of UTM_KEYS) {
-    const v = params.get(k);
-    if (v) found[k] = v;
+  for (const key of UTM_KEYS) {
+    const value = params.get(key);
+    if (value) found[key] = value;
   }
   if (Object.keys(found).length) {
     try {
       sessionStorage.setItem("utm_params", JSON.stringify(found));
     } catch {
-      /* storage indisponível */
+      // storage indisponível
     }
   }
 }
