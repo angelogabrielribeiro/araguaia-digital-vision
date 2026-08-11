@@ -11,8 +11,8 @@ export const site = {
   professionalRole: "Tecnologia da Informação • Suporte • Finanças e Contabilidade",
   shortName: "",
   email: "",
-  whatsappNumber: "5594000000000",
-  phoneDisplay: "",
+  whatsappNumber: "559491049244",
+  phoneDisplay: "+55 94 91049244",
   location: {
     city: "Conceição do Araguaia",
     state: "PA",
@@ -26,10 +26,13 @@ export const site = {
     googleSearchConsoleVerification: "",
   },
   media: {
-    portrait: "",
-    workingVideo: "",
-    workingVideoPoster: "",
-    gallery: [] as { src: string; alt: string }[],
+    portrait: "/media/pai-retrato.webp",
+    workingVideo: "/media/pai-trabalho.webm",
+    workingVideoPoster: "/media/pai-escritorio.webp",
+    gallery: [
+      { src: "/media/pai-escritorio.webp", alt: "Profissional em atendimento no escritório" },
+      { src: "/media/pai-retrato.webp", alt: "Retrato profissional" },
+    ] as { src: string; alt: string }[],
   },
   social: {
     instagram: "",
