@@ -145,6 +145,26 @@
   }
 }
 
+/* feixe de luz atravessando a cena: entra pela esquerda, sai pela direita */
+@keyframes meteor-streak {
+  0% {
+    transform: translateX(-110vw) rotate(var(--streak-tilt, 0deg));
+    opacity: 0;
+  }
+  8% {
+    opacity: var(--streak-opacity, 0.3);
+  }
+  82% {
+    opacity: var(--streak-opacity, 0.3);
+  }
+  100% {
+    transform: translateX(115vw) rotate(var(--streak-tilt, 0deg));
+    opacity: 0;
+  }
+}
+
+
+
 @utility hairline-t {
   border-top: 1px solid var(--hairline);
 }
