@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
 
+import { MeteorStreaks } from "@/components/MeteorStreaks";
 import { Reveal, RevealLines } from "@/components/Reveal";
 import { ScrollNarrative, type NarrativeStep } from "@/components/ScrollNarrative";
 import { WhatsappCta } from "@/components/WhatsappCta";
+import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import { AtmospherePlane } from "@/components/three/AtmospherePlane";
 import { Stage } from "@/components/three/Stage";
 import { site, type ServiceDef } from "@/config/site";
@@ -15,38 +17,28 @@ type Props = {
   mode: NarrativeMode;
   narrativeLabel: string;
   steps: NarrativeStep[];
-  /** Como o atendimento acontece, do primeiro contato à entrega */
   process: { title: string; body: string }[];
-  /** Perguntas frequentes específicas do serviço */
   faq?: { q: string; a: string }[];
   children?: React.ReactNode;
 };
 
-export function ServicePage({
-  service,
-  mode,
-  narrativeLabel,
-  steps,
-  process,
-  faq,
-  children,
-}: Props) {
+export function ServicePage({ service, mode, narrativeLabel, steps, process, faq, children }: Props) {
   const reduced = useReducedMotion();
 
   return (
     <>
-      {/* Hero do serviço */}
       <section className="relative flex min-h-[88vh] items-end overflow-hidden">
         <Stage className="absolute inset-0" cameraPosition={[0, 0, 6]}>
-          <AtmospherePlane hue={service.hue} intensity={0.9} reduced={reduced} />
+          <AtmospherePlane hue={service.hue} intensity={0.98} reduced={reduced} />
         </Stage>
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/70" />
+        <MeteorStreaks />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background via-background/34 to-background/64" />
 
         <div className="relative mx-auto w-full max-w-7xl px-5 pt-32 pb-16 lg:px-8 lg:pb-24">
           <p className="eyebrow">
             {site.location.city} ({site.location.state}) · {site.location.alsoServes} · Remoto
           </p>
-          <h1 className="mt-4 max-w-3xl font-display text-[clamp(2.4rem,7vw,4.6rem)] leading-[0.98] text-foreground">
+          <h1 className="mt-4 max-w-3xl font-display text-[clamp(2.4rem,7vw,4.8rem)] leading-[0.96] text-foreground">
             <RevealLines lines={[service.title]} />
           </h1>
           <p className="mt-5 max-w-xl text-lg text-muted-foreground">{service.tagline}</p>
@@ -54,11 +46,7 @@ export function ServicePage({
             {service.summary}
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <WhatsappCta
-              message={service.whatsappMessage}
-              serviceKey={service.key}
-              ctaLocation="hero_servico"
-            >
+            <WhatsappCta message={service.whatsappMessage} serviceKey={service.key} ctaLocation="hero_servico">
               Falar sobre {service.label.toLowerCase()}
             </WhatsappCta>
             <Link
@@ -71,10 +59,8 @@ export function ServicePage({
         </div>
       </section>
 
-      {/* Narrativa 3D dirigida pelo scroll */}
       <ScrollNarrative mode={mode} hue={service.hue} steps={steps} label={narrativeLabel} />
 
-      {/* O que está incluso */}
       <section className="relative border-t border-border bg-surface/30 py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <Reveal>
@@ -83,14 +69,24 @@ export function ServicePage({
               Escopo claro, combinado antes de começar.
             </h2>
           </Reveal>
-          <ul className="mt-12 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
+
+          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {service.items.map((item, i) => (
-              <li key={item} className="bg-background">
+              <li key={item} className="min-w-0">
                 <Reveal delay={i * 0.05} className="h-full">
-                  <div className="group h-full p-6 transition-colors hover:bg-surface">
-                    <Check className="h-4 w-4 text-signal" aria-hidden />
+                  <BorderBeamPanel
+                    beams={2}
+                    seed={i + 21}
+                    radius={16}
+                    thickness={1.25}
+                    glow={false}
+                    colors={[service.accent, i % 2 === 0 ? "#ffffff" : "#8aa4ad"]}
+                    innerClassName="group h-full min-h-[150px] rounded-[15px] bg-background/90 p-6 transition-transform duration-300 hover:-translate-y-1"
+                  >
+                    <span className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground">0{i + 1}</span>
+                    <Check className="mt-5 h-4 w-4" style={{ color: service.accent }} aria-hidden />
                     <p className="mt-4 text-sm leading-relaxed text-foreground/90">{item}</p>
-                  </div>
+                  </BorderBeamPanel>
                 </Reveal>
               </li>
             ))}
@@ -98,7 +94,6 @@ export function ServicePage({
         </div>
       </section>
 
-      {/* Como funciona */}
       <section className="py-20 lg:py-28">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <Reveal>
@@ -111,8 +106,8 @@ export function ServicePage({
             {process.map((p, i) => (
               <li key={p.title}>
                 <Reveal delay={i * 0.08} className="h-full">
-                  <div className="panel h-full p-6">
-                    <span className="font-mono text-xs text-tech">0{i + 1}</span>
+                  <div className="panel h-full p-6 transition-transform duration-300 hover:-translate-y-1.5">
+                    <span className="font-mono text-xs" style={{ color: service.accent }}>0{i + 1}</span>
                     <h3 className="mt-3 text-lg text-foreground">{p.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
                   </div>
@@ -128,9 +123,7 @@ export function ServicePage({
       {faq && faq.length > 0 && (
         <section className="border-t border-border py-20 lg:py-24">
           <div className="mx-auto max-w-3xl px-5 lg:px-8">
-            <Reveal>
-              <p className="eyebrow">Perguntas frequentes</p>
-            </Reveal>
+            <Reveal><p className="eyebrow">Perguntas frequentes</p></Reveal>
             <div className="mt-8 divide-y divide-border border-y border-border">
               {faq.map((f, i) => (
                 <Reveal key={f.q} delay={i * 0.05}>
@@ -138,9 +131,7 @@ export function ServicePage({
                     <summary className="cursor-pointer list-none text-base text-foreground marker:hidden">
                       <span className="flex items-start justify-between gap-4">
                         {f.q}
-                        <span className="mt-1 font-mono text-xs text-tech transition-transform group-open:rotate-45">
-                          +
-                        </span>
+                        <span className="mt-1 font-mono text-xs text-tech transition-transform group-open:rotate-45">+</span>
                       </span>
                     </summary>
                     <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{f.a}</p>
@@ -152,11 +143,11 @@ export function ServicePage({
         </section>
       )}
 
-      {/* CTA final contextual */}
       <section className="relative overflow-hidden border-t border-border">
         <Stage className="absolute inset-0" cameraPosition={[0, 0, 6]}>
-          <AtmospherePlane hue={service.hue} intensity={0.7} reduced={reduced} />
+          <AtmospherePlane hue={service.hue} intensity={0.76} reduced={reduced} />
         </Stage>
+        <MeteorStreaks />
         <div className="pointer-events-none absolute inset-0 bg-background/60" />
         <div className="relative mx-auto max-w-3xl px-5 py-24 text-center lg:px-8 lg:py-32">
           <Reveal>
@@ -164,15 +155,10 @@ export function ServicePage({
               Precisa de {service.label.toLowerCase()}?
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-sm text-muted-foreground lg:text-base">
-              Me explique a situação pelo WhatsApp. Se der para resolver remotamente, resolvo
-              remotamente; se precisar de atendimento presencial, combinamos data e local.
+              Me explique a situação pelo WhatsApp. Se der para resolver remotamente, resolvo remotamente; se precisar de atendimento presencial, combinamos data e local.
             </p>
             <div className="mt-8 flex justify-center">
-              <WhatsappCta
-                message={service.whatsappMessage}
-                serviceKey={service.key}
-                ctaLocation="cta_final_servico"
-              />
+              <WhatsappCta message={service.whatsappMessage} serviceKey={service.key} ctaLocation="cta_final_servico" />
             </div>
           </Reveal>
         </div>
