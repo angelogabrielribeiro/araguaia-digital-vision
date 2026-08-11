@@ -53,7 +53,7 @@ export function SiteHeader() {
             <span className="font-mono text-xs font-bold text-background">CA</span>
           </span>
           <span className="leading-none">
-            <span className="block text-sm font-medium text-foreground">{site.shortName}</span>
+            <span className="block text-sm font-medium text-foreground">{displayShortName}</span>
             <span className="block font-mono text-[10px] tracking-[0.16em] text-muted-foreground uppercase">
               {site.location.city} — {site.location.state}
             </span>
