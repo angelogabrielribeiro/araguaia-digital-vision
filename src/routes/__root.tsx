@@ -14,7 +14,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { site } from "@/config/site";
+import { displayName, site } from "@/config/site";
 import { captureUtms, initAnalytics, trackPageView } from "@/lib/analytics";
 
 
