@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ContabilidadeRouteImport } from './routes/contabilidade'
 import { Route as FinancasRouteImport } from './routes/financas'
 import { Route as ManutencaoRouteImport } from './routes/manutencao'
+import { Route as ServicosRouteImport } from './routes/servicos'
 import { Route as TiRouteImport } from './routes/ti'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const ManutencaoRoute = ManutencaoRouteImport.update({
   path: '/manutencao',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ServicosRoute = ServicosRouteImport.update({
+  id: '/servicos',
+  path: '/servicos',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TiRoute = TiRouteImport.update({
   id: '/ti',
   path: '/ti',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/contabilidade': typeof ContabilidadeRoute
   '/financas': typeof FinancasRoute
   '/manutencao': typeof ManutencaoRoute
+  '/servicos': typeof ServicosRoute
   '/ti': typeof TiRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/contabilidade': typeof ContabilidadeRoute
   '/financas': typeof FinancasRoute
   '/manutencao': typeof ManutencaoRoute
+  '/servicos': typeof ServicosRoute
   '/ti': typeof TiRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,23 @@ export interface FileRoutesById {
   '/contabilidade': typeof ContabilidadeRoute
   '/financas': typeof FinancasRoute
   '/manutencao': typeof ManutencaoRoute
+  '/servicos': typeof ServicosRoute
   '/ti': typeof TiRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contabilidade' | '/financas' | '/manutencao' | '/ti'
+  fullPaths:
+    '/' | '/contabilidade' | '/financas' | '/manutencao' | '/servicos' | '/ti'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contabilidade' | '/financas' | '/manutencao' | '/ti'
-  id: '__root__' | '/' | '/contabilidade' | '/financas' | '/manutencao' | '/ti'
+  to: '/' | '/contabilidade' | '/financas' | '/manutencao' | '/servicos' | '/ti'
+  id:
+    | '__root__'
+    | '/'
+    | '/contabilidade'
+    | '/financas'
+    | '/manutencao'
+    | '/servicos'
+    | '/ti'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +93,7 @@ export interface RootRouteChildren {
   ContabilidadeRoute: typeof ContabilidadeRoute
   FinancasRoute: typeof FinancasRoute
   ManutencaoRoute: typeof ManutencaoRoute
+  ServicosRoute: typeof ServicosRoute
   TiRoute: typeof TiRoute
 }
 
@@ -109,6 +127,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ManutencaoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/servicos': {
+      id: '/servicos'
+      path: '/servicos'
+      fullPath: '/servicos'
+      preLoaderRoute: typeof ServicosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ti': {
       id: '/ti'
       path: '/ti'
@@ -124,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContabilidadeRoute: ContabilidadeRoute,
   FinancasRoute: FinancasRoute,
   ManutencaoRoute: ManutencaoRoute,
+  ServicosRoute: ServicosRoute,
   TiRoute: TiRoute,
 }
 export const routeTree = rootRouteImport
