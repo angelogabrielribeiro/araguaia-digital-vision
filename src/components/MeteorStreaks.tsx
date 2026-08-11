@@ -83,7 +83,7 @@ export function MeteorStreaks({ className = "" }: { className?: string }) {
               background: `linear-gradient(90deg, transparent 0%, ${TAIL[s.hue]}00 10%, ${TAIL[s.hue]}55 60%, ${TAIL[s.hue]} 96%, #ffffff 100%)`,
               filter: "blur(0.3px)",
               boxShadow: `0 0 10px 0 ${TAIL[s.hue]}55`,
-            } as React.CSSProperties
+            } as CSSProperties
           }
         />
       ))}
