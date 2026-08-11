@@ -95,13 +95,13 @@ function Home() {
           <Reveal y={12}>
             <p className="eyebrow flex items-center gap-2">
               <MapPin className="h-3.5 w-3.5 text-tech" aria-hidden />
-              {site.location.city} — {site.location.state} · {site.location.alsoServes} · Remoto
+              Tecnologia, finanças e clareza para quem precisa resolver
             </p>
           </Reveal>
 
           <h1 className="mt-6 max-w-4xl font-display text-[clamp(2.6rem,8vw,5.6rem)] leading-[0.95] text-foreground">
             <RevealLines
-              lines={["Tecnologia que funciona.", "Números que fazem sentido."]}
+              lines={["Problemas complexos.", "Atendimento direto."]}
             />
           </h1>
 
@@ -124,7 +124,7 @@ function Home() {
                 to="/servicos"
                 className="inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-sm text-muted-foreground transition-colors hover:border-tech hover:text-foreground"
               >
-                Ver serviços <ArrowRight className="h-4 w-4" />
+                Conhecer serviços <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
           </Reveal>
