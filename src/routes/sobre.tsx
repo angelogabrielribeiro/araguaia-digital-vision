@@ -133,45 +133,36 @@ function SobrePage() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-surface/30 py-16 lg:py-24">
-        <div className="mx-auto max-w-5xl px-5 lg:px-8">
-          <Reveal>
-            <p className="eyebrow">Bastidor do trabalho</p>
-            <h2 className="mt-3 font-display text-3xl leading-tight text-foreground lg:text-4xl">
-              Um pouco de como o atendimento acontece.
-            </h2>
-          </Reveal>
-          <Reveal delay={0.1} className="mt-8">
-            <VideoSlot />
-          </Reveal>
+      {hasMedia && (
+        <section className="border-t border-border bg-surface/30 py-16 lg:py-24">
+          <div className="mx-auto max-w-5xl px-5 lg:px-8">
+            <Reveal>
+              <p className="eyebrow">Bastidor do trabalho</p>
+              <h2 className="mt-3 font-display text-3xl leading-tight text-foreground lg:text-4xl">
+                Um pouco de como o atendimento acontece.
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1} className="mt-8">
+              <VideoSlot />
+            </Reveal>
 
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {(site.media.gallery.length
-              ? site.media.gallery
-              : ([1, 2, 3] as const).map(() => null)
-            ).map((item, i) =>
-              item ? (
-                <img
-                  key={item.src}
-                  src={item.src}
-                  alt={item.alt}
-                  loading="lazy"
-                  className="aspect-4/3 w-full rounded-lg object-cover"
-                />
-              ) : (
-                <div
-                  key={i}
-                  className="flex aspect-4/3 w-full items-center justify-center rounded-lg border border-dashed border-border bg-background/50 p-4 text-center"
-                >
-                  <p className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
-                    [Placeholder] Foto {i + 1}
-                  </p>
-                </div>
-              ),
+            {site.media.gallery.length > 0 && (
+              <div className="mt-6 grid gap-4 sm:grid-cols-3">
+                {site.media.gallery.map((item) => (
+                  <img
+                    key={item.src}
+                    src={item.src}
+                    alt={item.alt}
+                    loading="lazy"
+                    className="aspect-4/3 w-full rounded-lg object-cover"
+                  />
+                ))}
+              </div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
+      )}
+
 
       <section className="py-20 text-center lg:py-28">
         <div className="mx-auto max-w-2xl px-5">
