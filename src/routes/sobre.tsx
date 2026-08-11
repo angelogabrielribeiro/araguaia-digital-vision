@@ -43,6 +43,37 @@ function AboutCopy() {
   );
 }
 
+function RealMediaGallery() {
+  return (
+    <div className="mx-auto mt-14 max-w-5xl">
+      <div className="mb-7">
+        <p className="eyebrow">Presença real</p>
+        <h2 className="mt-3 max-w-2xl font-display text-3xl leading-tight text-foreground lg:text-4xl">
+          O profissional por trás do atendimento.
+        </h2>
+      </div>
+      <div className="professional-photo-grid">
+        <div className="professional-media-shell">
+          <img src={site.media.workingVideoPoster} alt="Profissional em atendimento no escritório" loading="lazy" />
+          <span className="professional-media-kicker">ambiente de trabalho</span>
+        </div>
+        <div className="professional-media-shell">
+          <img src={site.media.portrait} alt={`Retrato de ${displayName}`} loading="lazy" />
+          <span className="professional-media-kicker">retrato profissional</span>
+        </div>
+      </div>
+      <div className="mt-14 text-center">
+        <h2 className="font-display text-3xl leading-tight text-foreground lg:text-5xl">
+          Vamos conversar sobre o que você precisa?
+        </h2>
+        <div className="mt-7 flex justify-center">
+          <WhatsappCta message={genericWhatsappMessage} serviceKey="geral" ctaLocation="cta_final_sobre" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function SobrePage() {
   const reduced = useReducedMotion();
   const canExpandVideo = Boolean(site.media.workingVideo && (site.media.workingVideoPoster || site.media.portrait));
@@ -60,6 +91,7 @@ function SobrePage() {
         textBlend
       >
         <AboutCopy />
+        <RealMediaGallery />
       </ScrollExpandMedia>
     );
   }
@@ -81,53 +113,9 @@ function SobrePage() {
       </section>
 
       <section className="border-t border-border py-16 lg:py-24">
-        <div className={`mx-auto grid max-w-7xl gap-12 px-5 lg:px-8 ${site.media.portrait ? "lg:grid-cols-12" : ""}`}>
-          {site.media.portrait && (
-            <Reveal className="lg:col-span-5">
-              <img
-                src={site.media.portrait}
-                alt={`Foto de ${displayName}`}
-                loading="lazy"
-                className="h-full max-h-[680px] w-full rounded-xl object-cover"
-              />
-            </Reveal>
-          )}
-
-          <Reveal delay={0.1} className={site.media.portrait ? "lg:col-span-7" : "mx-auto max-w-4xl"}>
-            <div className="panel mb-6 p-5">
-              <p className="text-sm font-medium text-foreground">{displayName}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{site.professionalRole}</p>
-              <p className="mt-3 font-mono text-[11px] tracking-wider text-muted-foreground uppercase">
-                {site.location.city} — {site.location.state}
-              </p>
-            </div>
-            <AboutCopy />
-          </Reveal>
-        </div>
-      </section>
-
-      {site.media.gallery.length > 0 && (
-        <section className="border-t border-border bg-surface/30 py-16 lg:py-24">
-          <div className="mx-auto max-w-6xl px-5 lg:px-8">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {site.media.gallery.map((item) => (
-                <img key={item.src} src={item.src} alt={item.alt} loading="lazy" className="aspect-4/3 w-full rounded-lg object-cover" />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className="py-20 text-center lg:py-28">
-        <div className="mx-auto max-w-2xl px-5">
-          <Reveal>
-            <h2 className="font-display text-3xl leading-tight text-foreground lg:text-5xl">
-              Vamos conversar sobre o que você precisa?
-            </h2>
-            <div className="mt-8 flex justify-center">
-              <WhatsappCta message={genericWhatsappMessage} serviceKey="geral" ctaLocation="cta_final_sobre" />
-            </div>
-          </Reveal>
+        <div className="mx-auto max-w-7xl px-5 lg:px-8">
+          <Reveal><AboutCopy /></Reveal>
+          <Reveal delay={0.1}><RealMediaGallery /></Reveal>
         </div>
       </section>
     </>
