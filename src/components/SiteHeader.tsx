@@ -2,9 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { WhatsappCta } from "@/components/WhatsappCta";
-import { genericWhatsappMessage, site } from "@/config/site";
+import { displayShortName, genericWhatsappMessage, site } from "@/config/site";
+
 
 const NAV = [
   { to: "/", label: "Início" },
