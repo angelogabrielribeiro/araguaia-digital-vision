@@ -44,7 +44,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
-          name: site.professionalName,
+          name: displayName,
           description:
             "Serviços de TI e suporte técnico, manutenção tecnológica, finanças e contabilidade.",
           areaServed: [
