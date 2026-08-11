@@ -22,6 +22,10 @@ const NAV = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
