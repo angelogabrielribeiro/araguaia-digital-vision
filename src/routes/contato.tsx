@@ -69,24 +69,29 @@ function ContatoPage() {
                 <li className="flex gap-3">
                   <Phone className="mt-0.5 h-4 w-4 shrink-0 text-tech" aria-hidden />
                   <span>
-                    <span className="block text-foreground">WhatsApp / telefone</span>
-                    {site.phoneDisplay}
+                    <span className="block text-foreground">WhatsApp</span>
+                    {site.phoneDisplay || "Conversa direta pelo botão abaixo"}
                   </span>
                 </li>
-                <li className="flex gap-3">
-                  <Mail className="mt-0.5 h-4 w-4 shrink-0 text-tech" aria-hidden />
-                  <span className="break-all">
-                    <span className="block text-foreground">E-mail</span>
-                    {site.email}
-                  </span>
-                </li>
-                <li className="flex gap-3">
-                  <Clock className="mt-0.5 h-4 w-4 shrink-0 text-tech" aria-hidden />
-                  <span>
-                    <span className="block text-foreground">Horário</span>
-                    {site.location.hours}
-                  </span>
-                </li>
+                {site.email && (
+                  <li className="flex gap-3">
+                    <Mail className="mt-0.5 h-4 w-4 shrink-0 text-tech" aria-hidden />
+                    <span className="break-all">
+                      <span className="block text-foreground">E-mail</span>
+                      {site.email}
+                    </span>
+                  </li>
+                )}
+                {site.location.hours && (
+                  <li className="flex gap-3">
+                    <Clock className="mt-0.5 h-4 w-4 shrink-0 text-tech" aria-hidden />
+                    <span>
+                      <span className="block text-foreground">Horário</span>
+                      {site.location.hours}
+                    </span>
+                  </li>
+                )}
+
               </ul>
               <div className="mt-8">
                 <WhatsappCta
