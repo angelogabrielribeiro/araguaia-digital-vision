@@ -107,48 +107,53 @@ export function SiteHeader() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
-            animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
-            exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-0 top-16 z-40 overflow-y-auto bg-background/97 backdrop-blur-2xl lg:hidden"
-          >
-            <nav className="flex flex-col px-5 py-6">
-              {NAV.map((item, i) => (
-                <motion.div
-                  key={item.to}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.06 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <Link
-                    to={item.to}
-                    onClick={() => setOpen(false)}
-                    activeProps={{ className: "text-tech" }}
-                    className="flex items-baseline justify-between border-b border-border py-4 font-display text-2xl text-foreground"
-                  >
-                    {item.label}
-                    <span className="font-mono text-[10px] text-muted-foreground">
-                      0{i + 1}
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
-              <div className="mt-8">
-                <WhatsappCta
-                  message={genericWhatsappMessage}
-                  serviceKey="geral"
-                  ctaLocation="menu_mobile"
-                  variant="block"
-                />
-              </div>
-            </nav>
-          </motion.div>
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+                animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+                exit={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="fixed inset-0 top-16 z-[60] overflow-y-auto bg-background/97 backdrop-blur-2xl lg:hidden"
+              >
+                <nav className="flex flex-col px-5 py-6">
+                  {NAV.map((item, i) => (
+                    <motion.div
+                      key={item.to}
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.06 * i, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                      <Link
+                        to={item.to}
+                        onClick={() => setOpen(false)}
+                        activeProps={{ className: "text-tech" }}
+                        className="flex items-baseline justify-between border-b border-border py-4 font-display text-2xl text-foreground"
+                      >
+                        {item.label}
+                        <span className="font-mono text-[10px] text-muted-foreground">
+                          0{i + 1}
+                        </span>
+                      </Link>
+                    </motion.div>
+                  ))}
+                  <div className="mt-8">
+                    <WhatsappCta
+                      message={genericWhatsappMessage}
+                      serviceKey="geral"
+                      ctaLocation="menu_mobile"
+                      variant="block"
+                    />
+                  </div>
+                </nav>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </header>
+
   );
 }
