@@ -97,7 +97,7 @@ function ServiceNode({
     group.current.scale.lerp(new THREE.Vector3(target, target, target), 0.12);
   });
 
-  const color = new THREE.Color().setHSL(service.hue / 360, 0.6, 0.6);
+  const color = new THREE.Color().setHSL(service.hue / 360, 0.85, 0.62);
 
   return (
     <group ref={group} position={position}>
@@ -113,17 +113,27 @@ function ServiceNode({
             document.body.style.cursor = "auto";
           }}
         >
-          <circleGeometry args={[0.42, 40]} />
-          <meshBasicMaterial color={color} transparent opacity={hovered ? 0.35 : 0.16} />
+          <circleGeometry args={[0.34, 40]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={hovered ? 0.5 : 0.26}
+            toneMapped={false}
+          />
         </mesh>
         <mesh>
-          <ringGeometry args={[0.44, 0.47, 48]} />
-          <meshBasicMaterial color={color} transparent opacity={hovered ? 0.95 : 0.5} />
+          <ringGeometry args={[0.36, 0.39, 48]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={hovered ? 1 : 0.7}
+            toneMapped={false}
+          />
         </mesh>
         <Html
           center
-          distanceFactor={7}
-          position={[0, -1.0, 0]}
+          distanceFactor={9}
+          position={[0, -0.72, 0]}
           zIndexRange={[20, 0]}
           style={{ pointerEvents: "auto" }}
         >

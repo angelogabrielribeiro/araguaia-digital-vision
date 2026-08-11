@@ -28,9 +28,9 @@ function buildLayout(mode: NarrativeMode): Layout[] {
     const r3 = Math.abs(rnd(i + 19.7));
 
     const chaos = new THREE.Vector3(
-      (r1 - 0.5) * 13,
-      (r2 - 0.5) * 8,
-      (r3 - 0.5) * 9 - 1.5,
+      (r1 - 0.5) * 9.5,
+      (r2 - 0.5) * 6.5,
+      (r3 - 0.5) * 6 - 1.0,
     );
 
     let order: THREE.Vector3;
@@ -94,13 +94,13 @@ export function NarrativeScene({
   const geometry = useMemo(() => {
     switch (mode) {
       case "nodes":
-        return new THREE.OctahedronGeometry(0.13, 0);
+        return new THREE.OctahedronGeometry(0.2, 0);
       case "exploded":
-        return new THREE.BoxGeometry(0.44, 0.06, 0.3);
+        return new THREE.BoxGeometry(0.58, 0.08, 0.4);
       case "flow":
-        return new THREE.BoxGeometry(0.3, 0.3, 0.3);
+        return new THREE.BoxGeometry(0.34, 0.34, 0.34);
       default:
-        return new THREE.BoxGeometry(0.62, 0.09, 0.09);
+        return new THREE.BoxGeometry(0.8, 0.11, 0.11);
     }
   }, [mode]);
 
@@ -125,8 +125,8 @@ export function NarrativeScene({
       dummy.updateMatrix();
       m.setMatrixAt(i, dummy.matrix);
 
-      const light = 0.28 + smooth * 0.42 + l.tint * 0.12;
-      tmpColor.setHSL(((hue + (1 - smooth) * 40) % 360) / 360, 0.5 + smooth * 0.25, light);
+      const light = 0.42 + smooth * 0.3 + l.tint * 0.14;
+      tmpColor.setHSL(((hue + (1 - smooth) * 40) % 360) / 360, 0.45 + smooth * 0.35, light);
       m.setColorAt(i, tmpColor);
     }
     m.instanceMatrix.needsUpdate = true;
@@ -140,12 +140,13 @@ export function NarrativeScene({
 
   return (
     <>
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[3, 5, 4]} intensity={2.1} color={accent} />
-      <directionalLight position={[-4, -2, -3]} intensity={0.9} color="#ffffff" />
+      <ambientLight intensity={1.4} />
+      <directionalLight position={[3, 5, 4]} intensity={3.4} color={accent} />
+      <directionalLight position={[-4, -2, -3]} intensity={1.6} color="#ffffff" />
+      <pointLight position={[0, 0, 6]} intensity={60} distance={26} color={accent} />
       <DepthField count={reduced ? 320 : 900} radius={14} color={`#${accent.getHexString()}`} reduced={reduced} />
       <instancedMesh ref={mesh} args={[geometry, undefined, COUNT]} frustumCulled={false}>
-        <meshStandardMaterial roughness={0.35} metalness={0.55} />
+        <meshStandardMaterial roughness={0.28} metalness={0.4} toneMapped={false} />
       </instancedMesh>
     </>
   );

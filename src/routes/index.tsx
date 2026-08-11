@@ -159,8 +159,8 @@ function Home() {
 
         <Stage
           className="h-[78vh] min-h-[520px] w-full touch-none"
-          cameraPosition={[0, 0.6, 9]}
-          fov={52}
+          cameraPosition={[0, 0.6, 12]}
+          fov={46}
         >
           <ServiceSpace
             reduced={reduced}
