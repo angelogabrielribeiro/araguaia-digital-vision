@@ -146,16 +146,58 @@ function Home() {
       </section>
 
       <section className="relative overflow-hidden border-t border-border bg-black">
-        <div className="mx-auto max-w-7xl px-5 pt-20 lg:px-8">
+        <div className="mx-auto max-w-7xl px-5 pt-16 lg:px-8">
           <Reveal>
             <p className="eyebrow">Áreas de atuação</p>
-            <h2 className="mt-3 max-w-2xl font-display text-4xl leading-tight text-foreground lg:text-6xl">
-              Cinco frentes dentro de um espaço que você pode explorar.
+            <h2 className="mt-3 max-w-xl font-display text-3xl leading-tight text-foreground lg:text-4xl">
+              Entre no espaço e escolha a área que você precisa.
             </h2>
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
+              Os cards estão em planos diferentes. Arraste para olhar ao redor e toque diretamente no serviço.
+            </p>
           </Reveal>
         </div>
-        <div className="mt-8">
+        <div className="mt-5">
           <ServiceConstellation />
+        </div>
+      </section>
+
+      <section className="relative border-t border-border py-20 lg:py-28">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_70%_45%,rgba(53,151,193,.12),transparent_44%)]" />
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-5 lg:grid-cols-[.9fr_1.1fr] lg:items-center lg:px-8">
+          <Reveal>
+            <p className="eyebrow">Quem atende</p>
+            <h2 className="mt-3 font-display text-4xl leading-tight text-foreground lg:text-5xl">
+              Tem uma pessoa real do outro lado da tela.
+            </h2>
+            <p className="mt-5 max-w-lg text-sm leading-relaxed text-muted-foreground lg:text-base">
+              O atendimento é direto, com atuação profissional em tecnologia e serviços administrativos. As imagens e o vídeo abaixo são do próprio profissional, sem banco de imagem genérico.
+            </p>
+            <Link to="/sobre" className="mt-7 inline-flex items-center gap-2 text-sm text-tech hover:underline">
+              Conhecer o profissional <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <div className="grid gap-3 sm:grid-cols-[1.25fr_.75fr]">
+              <div className="professional-media-shell min-h-[430px]">
+                <video
+                  src={site.media.workingVideo}
+                  poster={site.media.workingVideoPoster}
+                  autoPlay={!reduced}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+                <span className="professional-media-kicker">rotina profissional · conceição do araguaia</span>
+              </div>
+              <div className="professional-media-shell min-h-[430px]">
+                <img src={site.media.portrait} alt={`Retrato de ${displayName}`} loading="lazy" />
+                <span className="professional-media-kicker">atendimento direto</span>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -179,11 +221,6 @@ function Home() {
               <p>
                 O contato é pelo WhatsApp e a conversa é em português comum. Você não precisa saber o nome técnico do problema para pedir ajuda.
               </p>
-              <div className="pt-2">
-                <Link to="/sobre" className="inline-flex items-center gap-2 text-sm text-tech hover:underline">
-                  Conhecer o profissional <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
             </div>
           </Reveal>
         </div>
