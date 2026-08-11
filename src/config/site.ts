@@ -60,7 +60,9 @@ export type ServiceKey = "ti" | "manutencao" | "software" | "financas" | "contab
 export type ServiceDef = {
   key: ServiceKey;
   /** Rota do site. `software` vive dentro de /ti. */
-  path: string;
+  path: "/ti" | "/manutencao" | "/financas" | "/contabilidade";
+  /** Âncora opcional dentro da rota */
+  hash?: string;
   label: string;
   title: string;
   tagline: string;
@@ -97,7 +99,8 @@ export const services: ServiceDef[] = [
   },
   {
     key: "software",
-    path: "/ti#software",
+    path: "/ti",
+    hash: "software",
     label: "Software e Sistemas",
     title: "Software e sistemas",
     tagline: "Sistemas que funcionam e pessoas que sabem usá-los.",

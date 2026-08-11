@@ -127,8 +127,8 @@ function ServiceNode({
           style={{ pointerEvents: "auto" }}
         >
           <Link
-            to={service.path.split("#")[0]!}
-            hash={service.path.split("#")[1]}
+            to={service.path}
+            {...(service.hash ? { hash: service.hash } : {})}
             onPointerOver={() => setHovered(true)}
             onPointerOut={() => setHovered(false)}
             className="block w-52 rounded-lg border border-border bg-background/85 px-3 py-2 text-center backdrop-blur transition-colors hover:border-primary/70"
