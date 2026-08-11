@@ -1,13 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Laptop, MapPin, Monitor, Wrench } from "lucide-react";
 
+import { MeteorStreaks } from "@/components/MeteorStreaks";
 import { Reveal, RevealLines } from "@/components/Reveal";
+import { ServiceConstellation } from "@/components/ServiceConstellation";
 import { WhatsappCta } from "@/components/WhatsappCta";
+import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
 import { AtmospherePlane } from "@/components/three/AtmospherePlane";
 import { ServiceSpace } from "@/components/three/ServiceSpace";
 import { Stage } from "@/components/three/Stage";
-import { genericWhatsappMessage, services, site } from "@/config/site";
+import { displayName, genericWhatsappMessage, site } from "@/config/site";
 import { useReducedMotion } from "@/lib/motion";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
