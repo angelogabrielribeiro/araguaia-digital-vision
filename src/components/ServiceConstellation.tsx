@@ -1,11 +1,11 @@
-import { Environment, Html, OrbitControls, Plane, Sphere } from "@react-three/drei";
+import { Environment, Sphere } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
-import { services, type ServiceDef } from "@/config/site";
+import { services } from "@/config/site";
 import { useReducedMotion } from "@/lib/motion";
 
 type CardPosition = {
@@ -13,16 +13,24 @@ type CardPosition = {
   rotationZ: number;
 };
 
+type DragState = {
+  pointerId: number;
+  x: number;
+  y: number;
+  yaw: number;
+  pitch: number;
+} | null;
+
 function useCardPositions() {
   return useMemo<CardPosition[]>(() => {
     const mobile = typeof window !== "undefined" && window.innerWidth < 768;
     if (mobile) {
       return [
-        { position: [-1.05, 1.85, -4.8], rotationZ: -0.045 },
-        { position: [1.05, 0.95, -6.2], rotationZ: 0.04 },
-        { position: [-1.15, -0.15, -7.3], rotationZ: 0.03 },
-        { position: [1.05, -1.35, -5.5], rotationZ: -0.04 },
-        { position: [0, -2.35, -8.2], rotationZ: 0.015 },
+        { position: [-1.15, 1.8, -4.8], rotationZ: -0.045 },
+        { position: [1.15, 0.9, -6.2], rotationZ: 0.04 },
+        { position: [-1.2, -0.2, -7.3], rotationZ: 0.03 },
+        { position: [1.15, -1.35, -5.5], rotationZ: -0.04 },
+        { position: [0, -2.3, -8.2], rotationZ: 0.015 },
       ];
     }
 
@@ -40,7 +48,7 @@ function Starfield({ reduced }: { reduced: boolean }) {
   const ref = useRef<THREE.Points>(null);
   const geometry = useMemo(() => {
     const mobile = typeof window !== "undefined" && window.innerWidth < 768;
-    const count = reduced ? 2600 : mobile ? 5200 : 9800;
+    const count = reduced ? 2400 : mobile ? 5000 : 9000;
     const positions = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
@@ -103,119 +111,64 @@ function AmbientFragments({ reduced }: { reduced: boolean }) {
   );
 }
 
-function FloatingServiceCard({ service, index, cardPosition, reduced }: {
-  service: ServiceDef;
-  index: number;
-  cardPosition: CardPosition;
+function SceneController({
+  reduced,
+  positions,
+  cardRefs,
+  yawRef,
+  pitchRef,
+}: {
   reduced: boolean;
+  positions: CardPosition[];
+  cardRefs: React.MutableRefObject<Array<HTMLDivElement | null>>;
+  yawRef: React.MutableRefObject<number>;
+  pitchRef: React.MutableRefObject<number>;
 }) {
-  const groupRef = useRef<THREE.Group>(null);
-  const pointerDownRef = useRef<{ x: number; y: number } | null>(null);
-  const [hovered, setHovered] = useState(false);
-  const navigate = useNavigate();
+  const projected = useMemo(() => new THREE.Vector3(), []);
+  const world = useMemo(() => new THREE.Vector3(), []);
+  const target = useMemo(() => new THREE.Vector3(0, 0, -5.8), []);
 
-  useFrame(({ camera, clock }) => {
-    if (!groupRef.current) return;
-    groupRef.current.lookAt(camera.position);
-    if (!reduced) {
-      groupRef.current.position.y = cardPosition.position[1] + Math.sin(clock.elapsedTime * 0.55 + index * 1.13) * 0.13;
-      groupRef.current.position.x = cardPosition.position[0] + Math.cos(clock.elapsedTime * 0.31 + index) * 0.055;
-    }
+  useFrame(({ camera, clock, size }) => {
+    const yaw = yawRef.current;
+    const pitch = THREE.MathUtils.clamp(pitchRef.current, -0.34, 0.34);
+    const radius = 7;
+
+    camera.position.set(
+      Math.sin(yaw) * radius,
+      0.05 + Math.sin(pitch) * 4.1,
+      target.z + Math.cos(yaw) * radius,
+    );
+    camera.lookAt(target);
+    camera.updateMatrixWorld();
+
+    positions.forEach((card, index) => {
+      const element = cardRefs.current[index];
+      if (!element) return;
+
+      const floatY = reduced ? 0 : Math.sin(clock.elapsedTime * 0.55 + index * 1.13) * 0.12;
+      const floatX = reduced ? 0 : Math.cos(clock.elapsedTime * 0.31 + index) * 0.05;
+      world.set(card.position[0] + floatX, card.position[1] + floatY, card.position[2]);
+      projected.copy(world).project(camera);
+
+      const visible = projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.18 && Math.abs(projected.y) < 1.18;
+      if (!visible) {
+        element.style.opacity = "0";
+        element.style.pointerEvents = "none";
+        return;
+      }
+
+      const x = (projected.x * 0.5 + 0.5) * size.width;
+      const y = (-projected.y * 0.5 + 0.5) * size.height;
+      const distance = camera.position.distanceTo(world);
+      const scale = THREE.MathUtils.clamp(1.17 - (distance - 6) * 0.045, 0.82, 1.08);
+      const rotate = (card.rotationZ * 180) / Math.PI;
+
+      element.style.opacity = "1";
+      element.style.pointerEvents = "auto";
+      element.style.zIndex = String(Math.max(1, Math.round(100 - distance * 5)));
+      element.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${rotate}deg) scale(${scale})`;
+    });
   });
-
-  const openService = () => {
-    navigate({ to: service.path, ...(service.hash ? { hash: service.hash } : {}) });
-  };
-
-  return (
-    <group ref={groupRef} position={cardPosition.position} rotation={[0, 0, cardPosition.rotationZ]}>
-      <Plane
-        args={[2.65, 1.9]}
-        position={[0, 0, 0.08]}
-        renderOrder={100}
-        onPointerDown={(event) => {
-          pointerDownRef.current = { x: event.clientX, y: event.clientY };
-        }}
-        onPointerUp={(event) => {
-          const start = pointerDownRef.current;
-          pointerDownRef.current = null;
-          if (!start) return;
-          const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y);
-          if (distance > 8) return;
-          event.stopPropagation();
-          openService();
-        }}
-        onPointerCancel={() => {
-          pointerDownRef.current = null;
-        }}
-        onPointerOver={(event) => {
-          event.stopPropagation();
-          setHovered(true);
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerOut={(event) => {
-          event.stopPropagation();
-          pointerDownRef.current = null;
-          setHovered(false);
-          document.body.style.cursor = "";
-        }}
-      >
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} depthTest={false} side={THREE.DoubleSide} />
-      </Plane>
-
-      <Html
-        transform
-        distanceFactor={4.8}
-        position={[0, 0, 0]}
-        zIndexRange={[30, 10]}
-        style={{ pointerEvents: "auto", userSelect: "none", WebkitUserSelect: "none" }}
-      >
-        <Link
-          to={service.path}
-          {...(service.hash ? { hash: service.hash } : {})}
-          draggable={false}
-          onClick={(event) => event.stopPropagation()}
-          onDragStart={(event) => event.preventDefault()}
-          onPointerDown={(event) => event.stopPropagation()}
-          onPointerEnter={() => setHovered(true)}
-          onPointerLeave={() => setHovered(false)}
-          className="block w-[218px] select-none overflow-hidden rounded-[20px] border bg-[#071018]/96 p-3 text-white shadow-2xl backdrop-blur-xl sm:w-[244px] sm:p-3.5"
-          style={{
-            borderColor: `${service.accent}${hovered ? "cc" : "55"}`,
-            boxShadow: hovered ? `0 28px 68px ${service.accent}34, inset 0 0 34px ${service.accent}10` : "0 24px 58px rgba(0,0,0,.48)",
-            transform: hovered ? "scale(1.04)" : "scale(1)",
-            transition: "transform .22s ease, border-color .22s ease, box-shadow .22s ease",
-            touchAction: "pan-y",
-            WebkitTapHighlightColor: "transparent",
-            backfaceVisibility: "hidden",
-          }}
-        >
-          <div
-            className="relative h-[102px] overflow-hidden rounded-[14px] border border-white/8 bg-white/[.025] sm:h-[116px]"
-            style={{ background: `radial-gradient(circle at 50% 55%, ${service.accent}32, transparent 62%), #03080d` }}
-          >
-            <span className="absolute left-1/2 top-1/2 h-[70px] w-[70px] -translate-x-1/2 -translate-y-1/2 rounded-full border" style={{ borderColor: `${service.accent}88` }} />
-            <span className="absolute left-1/2 top-1/2 h-[44px] w-[96px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
-            <span className="absolute left-1/2 top-1/2 grid h-10 w-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[11px] font-semibold" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 30px ${service.accent}82` }}>
-              0{index + 1}
-            </span>
-            <span className="absolute inset-x-0 top-1/2 h-px opacity-50" style={{ background: `linear-gradient(90deg, transparent, ${service.accent}, transparent)` }} />
-          </div>
-          <div className="px-1 pb-1 pt-3">
-            <small className="block font-mono text-[9px] uppercase tracking-[.16em]" style={{ color: service.accent }}>{service.label}</small>
-            <strong className="mt-1.5 block text-[16px] font-medium leading-tight sm:text-[17px]">{service.title}</strong>
-            <span className="mt-2.5 flex items-center gap-1.5 font-mono text-[8px] uppercase tracking-[.13em] text-white/50">
-              abrir área <ArrowUpRight size={11} />
-            </span>
-          </div>
-        </Link>
-      </Html>
-    </group>
-  );
-}
-
-function GalaxyScene({ reduced }: { reduced: boolean }) {
-  const positions = useCardPositions();
 
   return (
     <>
@@ -226,35 +179,23 @@ function GalaxyScene({ reduced }: { reduced: boolean }) {
       <Environment preset="night" />
       <Starfield reduced={reduced} />
       <AmbientFragments reduced={reduced} />
-
       <Sphere args={[5.3, 48, 48]} position={[0, 0, -5.5]}>
         <meshBasicMaterial color="#59c9df" transparent opacity={0.04} wireframe />
       </Sphere>
       <Sphere args={[8.6, 48, 48]} position={[0, 0, -5.9]}>
         <meshBasicMaterial color="#4da5c7" transparent opacity={0.018} wireframe />
       </Sphere>
-
-      {services.map((service, index) => (
-        <FloatingServiceCard key={service.key} service={service} index={index} cardPosition={positions[index]!} reduced={reduced} />
-      ))}
-
-      <OrbitControls
-        enableRotate
-        enablePan={false}
-        enableZoom={false}
-        autoRotate={false}
-        rotateSpeed={0.42}
-        target={[0, 0, -5.8]}
-        minPolarAngle={0.62}
-        maxPolarAngle={2.5}
-      />
     </>
   );
 }
 
 export function ServiceConstellation() {
   const reduced = useReducedMotion();
-  const hostRef = useRef<HTMLDivElement>(null);
+  const positions = useCardPositions();
+  const cardRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const yawRef = useRef(0);
+  const pitchRef = useRef(0);
+  const dragRef = useRef<DragState>(null);
   const [coarsePointer, setCoarsePointer] = useState(false);
 
   useEffect(() => {
@@ -265,42 +206,115 @@ export function ServiceConstellation() {
     return () => query.removeEventListener?.("change", update);
   }, []);
 
-  useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      const canvas = hostRef.current?.querySelector("canvas");
-      if (!canvas) return;
-      canvas.style.touchAction = coarsePointer ? "pan-y" : "none";
-      canvas.style.pointerEvents = "auto";
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [coarsePointer]);
-
   return (
-    <div ref={hostRef} className="relative isolate h-[680px] w-full select-none overflow-hidden sm:h-[760px] lg:h-[820px]">
+    <div
+      className="relative isolate h-[680px] w-full select-none overflow-hidden sm:h-[760px] lg:h-[820px]"
+      style={{ touchAction: coarsePointer ? "pan-y" : "none", WebkitUserSelect: "none" }}
+      onPointerDown={(event) => {
+        if (event.button !== 0) return;
+        dragRef.current = {
+          pointerId: event.pointerId,
+          x: event.clientX,
+          y: event.clientY,
+          yaw: yawRef.current,
+          pitch: pitchRef.current,
+        };
+        event.currentTarget.setPointerCapture?.(event.pointerId);
+      }}
+      onPointerMove={(event) => {
+        const drag = dragRef.current;
+        if (!drag || drag.pointerId !== event.pointerId) return;
+        const dx = event.clientX - drag.x;
+        const dy = event.clientY - drag.y;
+
+        if (coarsePointer) {
+          if (Math.abs(dx) <= Math.abs(dy) + 6) return;
+          yawRef.current = drag.yaw - dx * 0.0065;
+          return;
+        }
+
+        yawRef.current = drag.yaw - dx * 0.0048;
+        pitchRef.current = THREE.MathUtils.clamp(drag.pitch - dy * 0.0032, -0.34, 0.34);
+      }}
+      onPointerUp={(event) => {
+        if (dragRef.current?.pointerId === event.pointerId) dragRef.current = null;
+        event.currentTarget.releasePointerCapture?.(event.pointerId);
+      }}
+      onPointerCancel={() => {
+        dragRef.current = null;
+      }}
+    >
       <Canvas
         camera={{ position: [0, 0.05, 1.2], fov: 60, near: 0.08, far: 120 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-        style={{
-          userSelect: "none",
-          WebkitUserSelect: "none",
-          touchAction: coarsePointer ? "pan-y" : "none",
-          pointerEvents: "auto",
-        }}
+        style={{ pointerEvents: "none" }}
       >
         <Suspense fallback={null}>
-          <GalaxyScene reduced={reduced} />
+          <SceneController
+            reduced={reduced}
+            positions={positions}
+            cardRefs={cardRefs}
+            yawRef={yawRef}
+            pitchRef={pitchRef}
+          />
         </Suspense>
       </Canvas>
 
-      <div className="pointer-events-none absolute left-5 top-5 z-10 sm:left-8 sm:top-8">
+      <div className="pointer-events-none absolute inset-0 z-20">
+        {services.map((service, index) => (
+          <div
+            key={service.key}
+            ref={(element) => {
+              cardRefs.current[index] = element;
+            }}
+            className="absolute left-0 top-0 opacity-0 will-change-transform"
+          >
+            <Link
+              to={service.path}
+              {...(service.hash ? { hash: service.hash } : {})}
+              draggable={false}
+              onPointerDown={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
+              onDragStart={(event) => event.preventDefault()}
+              className="pointer-events-auto group block w-[176px] select-none overflow-hidden rounded-[17px] border bg-[#071018]/96 p-2.5 text-white shadow-2xl backdrop-blur-xl sm:w-[198px] sm:p-3 lg:w-[208px]"
+              style={{
+                borderColor: `${service.accent}66`,
+                boxShadow: `0 20px 52px rgba(0,0,0,.52), 0 0 22px ${service.accent}12`,
+                WebkitTapHighlightColor: "transparent",
+              }}
+            >
+              <div
+                className="relative h-[82px] overflow-hidden rounded-[11px] border border-white/8 bg-white/[.025] sm:h-[94px] lg:h-[100px]"
+                style={{ background: `radial-gradient(circle at 50% 55%, ${service.accent}32, transparent 62%), #03080d` }}
+              >
+                <span className="absolute left-1/2 top-1/2 h-[56px] w-[56px] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-transform duration-300 group-hover:scale-110" style={{ borderColor: `${service.accent}88` }} />
+                <span className="absolute left-1/2 top-1/2 h-[36px] w-[78px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
+                <span className="absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[9px] font-semibold sm:h-9 sm:w-9 sm:text-[10px]" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 24px ${service.accent}82` }}>
+                  0{index + 1}
+                </span>
+                <span className="absolute inset-x-0 top-1/2 h-px opacity-50" style={{ background: `linear-gradient(90deg, transparent, ${service.accent}, transparent)` }} />
+              </div>
+              <div className="px-1 pb-1 pt-2.5">
+                <small className="block font-mono text-[7px] uppercase tracking-[.16em] sm:text-[8px]" style={{ color: service.accent }}>{service.label}</small>
+                <strong className="mt-1.5 block text-[12px] font-medium leading-tight sm:text-[14px]">{service.title}</strong>
+                <span className="mt-2 flex items-center gap-1 font-mono text-[7px] uppercase tracking-[.13em] text-white/50 sm:text-[8px]">
+                  abrir área <ArrowUpRight size={10} />
+                </span>
+              </div>
+            </Link>
+          </div>
+        ))}
+      </div>
+
+      <div className="pointer-events-none absolute left-5 top-5 z-30 sm:left-8 sm:top-8">
         <p className="font-mono text-[9px] tracking-[0.2em] text-white/55 uppercase">
-          {coarsePointer ? "serviços · deslize para girar · toque para abrir" : "serviços · arraste para explorar"}
+          {coarsePointer ? "serviços · arraste na horizontal · toque para abrir" : "serviços · arraste para explorar"}
         </p>
       </div>
-      <div className="pointer-events-none absolute inset-x-5 bottom-5 z-10 flex justify-center sm:justify-end sm:px-3">
+      <div className="pointer-events-none absolute inset-x-5 bottom-5 z-30 flex justify-center sm:justify-end sm:px-3">
         <span className="rounded-full border border-white/10 bg-black/35 px-3 py-1.5 font-mono text-[8px] tracking-[0.15em] text-white/45 uppercase backdrop-blur-md">
-          {coarsePointer ? "scroll vertical liberado · arraste na horizontal para olhar" : "arraste para olhar · clique no card · zoom bloqueado"}
+          {coarsePointer ? "scroll vertical livre · arraste lateralmente para olhar" : "arraste para olhar · clique no card · zoom bloqueado"}
         </span>
       </div>
     </div>
