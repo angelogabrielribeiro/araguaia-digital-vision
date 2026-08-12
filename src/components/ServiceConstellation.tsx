@@ -111,21 +111,18 @@ function FloatingServiceCard({ service, index, cardPosition, reduced }: {
 }) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
+  const tilt = (cardPosition.rotationZ * 180) / Math.PI;
 
-  useFrame(({ camera, clock }) => {
-    if (!groupRef.current) return;
-    groupRef.current.lookAt(camera.position);
-    if (!reduced) {
-      groupRef.current.position.y = cardPosition.position[1] + Math.sin(clock.elapsedTime * 0.55 + index * 1.13) * 0.13;
-      groupRef.current.position.x = cardPosition.position[0] + Math.cos(clock.elapsedTime * 0.31 + index) * 0.055;
-    }
+  useFrame(({ clock }) => {
+    if (!groupRef.current || reduced) return;
+    groupRef.current.position.y = cardPosition.position[1] + Math.sin(clock.elapsedTime * 0.55 + index * 1.13) * 0.13;
+    groupRef.current.position.x = cardPosition.position[0] + Math.cos(clock.elapsedTime * 0.31 + index) * 0.055;
   });
 
   return (
-    <group ref={groupRef} position={cardPosition.position} rotation={[0, 0, cardPosition.rotationZ]}>
+    <group ref={groupRef} position={cardPosition.position}>
       <Html
-        transform
-        distanceFactor={3.2}
+        center
         position={[0, 0, 0]}
         zIndexRange={[18, 2]}
         style={{ pointerEvents: "auto", userSelect: "none", WebkitUserSelect: "none" }}
@@ -134,36 +131,37 @@ function FloatingServiceCard({ service, index, cardPosition, reduced }: {
           to={service.path}
           {...(service.hash ? { hash: service.hash } : {})}
           draggable={false}
+          onClick={(event) => event.stopPropagation()}
           onDragStart={(event) => event.preventDefault()}
           onPointerDown={(event) => event.stopPropagation()}
           onPointerEnter={() => setHovered(true)}
           onPointerLeave={() => setHovered(false)}
-          className="block w-[292px] select-none overflow-hidden rounded-[28px] border bg-[#071018]/96 p-4 text-white shadow-2xl backdrop-blur-xl sm:w-[328px] sm:p-5"
+          className="block w-[164px] select-none overflow-hidden rounded-[16px] border bg-[#071018]/96 p-2.5 text-white shadow-2xl backdrop-blur-xl sm:w-[184px] sm:p-3"
           style={{
             borderColor: `${service.accent}${hovered ? "cc" : "55"}`,
-            boxShadow: hovered ? `0 36px 88px ${service.accent}30, inset 0 0 44px ${service.accent}10` : "0 28px 72px rgba(0,0,0,.46)",
-            transform: hovered ? "scale(1.035)" : "scale(1)",
+            boxShadow: hovered ? `0 22px 55px ${service.accent}35, inset 0 0 26px ${service.accent}12` : "0 18px 45px rgba(0,0,0,.48)",
+            transform: `rotate(${tilt}deg) scale(${hovered ? 1.045 : 1})`,
             transition: "transform .22s ease, border-color .22s ease, box-shadow .22s ease",
             touchAction: "pan-y",
             WebkitTapHighlightColor: "transparent",
           }}
         >
           <div
-            className="relative h-[136px] overflow-hidden rounded-[20px] border border-white/8 bg-white/[.025] sm:h-[156px]"
+            className="relative h-[76px] overflow-hidden rounded-[11px] border border-white/8 bg-white/[.025] sm:h-[88px]"
             style={{ background: `radial-gradient(circle at 50% 55%, ${service.accent}32, transparent 62%), #03080d` }}
           >
-            <span className="absolute left-1/2 top-1/2 h-[96px] w-[96px] -translate-x-1/2 -translate-y-1/2 rounded-full border" style={{ borderColor: `${service.accent}88` }} />
-            <span className="absolute left-1/2 top-1/2 h-[60px] w-[132px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
-            <span className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[16px] font-semibold" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 40px ${service.accent}82` }}>
+            <span className="absolute left-1/2 top-1/2 h-[52px] w-[52px] -translate-x-1/2 -translate-y-1/2 rounded-full border sm:h-[58px] sm:w-[58px]" style={{ borderColor: `${service.accent}88` }} />
+            <span className="absolute left-1/2 top-1/2 h-[34px] w-[72px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed sm:h-[38px] sm:w-[80px]" style={{ borderColor: `${service.accent}66` }} />
+            <span className="absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[9px] font-semibold sm:h-9 sm:w-9 sm:text-[10px]" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 24px ${service.accent}88` }}>
               0{index + 1}
             </span>
             <span className="absolute inset-x-0 top-1/2 h-px opacity-50" style={{ background: `linear-gradient(90deg, transparent, ${service.accent}, transparent)` }} />
           </div>
-          <div className="px-1 pb-1 pt-4">
-            <small className="block font-mono text-[12px] uppercase tracking-[.16em]" style={{ color: service.accent }}>{service.label}</small>
-            <strong className="mt-2 block text-[22px] font-medium leading-tight sm:text-[24px]">{service.title}</strong>
-            <span className="mt-3 flex items-center gap-2 font-mono text-[12px] uppercase tracking-[.13em] text-white/50">
-              abrir área <ArrowUpRight size={16} />
+          <div className="px-1 pb-1 pt-2.5">
+            <small className="block font-mono text-[7px] uppercase tracking-[.16em]" style={{ color: service.accent }}>{service.label}</small>
+            <strong className="mt-1.5 block text-[12px] font-medium leading-tight sm:text-[13px]">{service.title}</strong>
+            <span className="mt-2 flex items-center gap-1 font-mono text-[7px] uppercase tracking-[.13em] text-white/50">
+              abrir área <ArrowUpRight size={9} />
             </span>
           </div>
         </Link>
@@ -234,6 +232,7 @@ export function ServiceConstellation() {
           userSelect: "none",
           WebkitUserSelect: "none",
           touchAction: coarsePointer ? "pan-y" : "none",
+          pointerEvents: coarsePointer ? "none" : "auto",
         }}
       >
         <Suspense fallback={null}>
