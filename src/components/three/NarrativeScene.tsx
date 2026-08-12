@@ -35,13 +35,11 @@ function buildLayout(mode: NarrativeMode): Layout[] {
 
     let order: THREE.Vector3;
     if (mode === "nodes") {
-      // malha de infraestrutura: grade regular com leve relevo
       const cols = 20;
       const x = (i % cols) - cols / 2;
       const y = Math.floor(i / cols) - COUNT / cols / 2;
       order = new THREE.Vector3(x * 0.62, y * 0.62, Math.sin(x * 0.7 + y * 0.5) * 0.5);
     } else if (mode === "exploded") {
-      // vista explodida: camadas de um equipamento se separando
       const layer = i % 5;
       const inLayer = Math.floor(i / 5);
       const ang = (inLayer / (COUNT / 5)) * Math.PI * 2;
@@ -52,7 +50,6 @@ function buildLayout(mode: NarrativeMode): Layout[] {
         Math.sin(ang) * rad * 0.75,
       );
     } else if (mode === "flow") {
-      // fluxo financeiro: colunas legíveis crescendo em ordem
       const cols = 22;
       const c = i % cols;
       const row = Math.floor(i / cols);
@@ -63,7 +60,6 @@ function buildLayout(mode: NarrativeMode): Layout[] {
         row * -0.7,
       );
     } else {
-      // razão contábil: linhas e colunas de um livro organizado
       const cols = 11;
       const c = i % cols;
       const row = Math.floor(i / cols);
@@ -83,7 +79,6 @@ export function NarrativeScene({
 }: {
   mode: NarrativeMode;
   hue: number;
-  /** 0 = caos, 1 = ordem */
   progressRef: React.MutableRefObject<number>;
   reduced?: boolean;
 }) {
@@ -126,7 +121,7 @@ export function NarrativeScene({
       m.setMatrixAt(i, dummy.matrix);
 
       const light = 0.55 + smooth * 0.2 + l.tint * 0.15;
-      tmpColor.setHSL(((hue + (1 - smooth) * 40) % 360) / 360, 0.45 + smooth * 0.35, light);
+      tmpColor.setHSL(hue / 360, 0.5 + smooth * 0.3, light);
       m.setColorAt(i, tmpColor);
     }
     m.instanceMatrix.needsUpdate = true;
