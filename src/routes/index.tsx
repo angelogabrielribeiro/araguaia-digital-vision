@@ -3,7 +3,6 @@ import { ArrowRight, Laptop, MapPin, Monitor, Wrench } from "lucide-react";
 
 import { MeteorStreaks } from "@/components/MeteorStreaks";
 import { Reveal, RevealLines } from "@/components/Reveal";
-import { SafeVideo } from "@/components/SafeVideo";
 import { ServiceConstellation } from "@/components/ServiceConstellation";
 import { WhatsappCta } from "@/components/WhatsappCta";
 import { BorderBeamPanel } from "@/components/ui/border-beam-panel";
@@ -179,26 +178,26 @@ function Home() {
             </Link>
           </Reveal>
 
-          <div className="grid gap-3 sm:grid-cols-[1.25fr_.75fr]">
-            <div className="professional-media-shell min-h-[430px]">
-              <SafeVideo
-                src={site.media.workingVideo}
-                fallbackSrc={site.media.workingVideoPoster}
-                fallbackAlt="Profissional em atendimento no escritório"
-                poster={site.media.workingVideoPoster}
-                autoPlay={!reduced}
-                muted
-                loop
-                playsInline
-                preload="auto"
-              />
-              <span className="professional-media-kicker">rotina profissional · conceição do araguaia</span>
+          <Reveal delay={0.12}>
+            <div className="grid gap-3 sm:grid-cols-[1.25fr_.75fr]">
+              <div className="professional-media-shell min-h-[430px]">
+                <video
+                  src={site.media.workingVideo}
+                  poster={site.media.workingVideoPoster}
+                  autoPlay={!reduced}
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+                <span className="professional-media-kicker">rotina profissional · conceição do araguaia</span>
+              </div>
+              <div className="professional-media-shell min-h-[430px]">
+                <img src={site.media.portrait} alt={`Retrato de ${displayName}`} loading="lazy" />
+                <span className="professional-media-kicker">atendimento direto</span>
+              </div>
             </div>
-            <div className="professional-media-shell min-h-[430px]">
-              <img src={site.media.portrait} alt={`Retrato de ${displayName}`} loading="eager" decoding="async" />
-              <span className="professional-media-kicker">atendimento direto</span>
-            </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
