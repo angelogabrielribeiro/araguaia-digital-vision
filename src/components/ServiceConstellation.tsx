@@ -1,8 +1,8 @@
-import { Environment, Html, OrbitControls, Plane, Sphere } from "@react-three/drei";
+import { Environment, Html, OrbitControls, Sphere } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
-import { Suspense, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 
 import { services, type ServiceDef } from "@/config/site";
@@ -18,11 +18,11 @@ function useCardPositions() {
     const mobile = typeof window !== "undefined" && window.innerWidth < 768;
     if (mobile) {
       return [
-        { position: [-1.05, 1.85, -4.8], rotationZ: -0.045 },
-        { position: [1.05, 0.95, -6.2], rotationZ: 0.04 },
-        { position: [-1.15, -0.15, -7.3], rotationZ: 0.03 },
-        { position: [1.05, -1.35, -5.5], rotationZ: -0.04 },
-        { position: [0, -2.35, -8.2], rotationZ: 0.015 },
+        { position: [-1.05, 1.65, -4.8], rotationZ: -0.045 },
+        { position: [1.05, 0.85, -6.2], rotationZ: 0.04 },
+        { position: [-1.1, -0.15, -7.3], rotationZ: 0.03 },
+        { position: [1.0, -1.2, -5.5], rotationZ: -0.04 },
+        { position: [0, -2.05, -8.2], rotationZ: 0.015 },
       ];
     }
 
@@ -110,9 +110,7 @@ function FloatingServiceCard({ service, index, cardPosition, reduced }: {
   reduced: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
-  const pointerDownRef = useRef<{ x: number; y: number } | null>(null);
   const [hovered, setHovered] = useState(false);
-  const navigate = useNavigate();
 
   useFrame(({ camera, clock }) => {
     if (!groupRef.current) return;
@@ -123,93 +121,58 @@ function FloatingServiceCard({ service, index, cardPosition, reduced }: {
     }
   });
 
-  const openService = () => {
-    navigate({ to: service.path, ...(service.hash ? { hash: service.hash } : {}) });
-  };
-
   return (
     <group ref={groupRef} position={cardPosition.position} rotation={[0, 0, cardPosition.rotationZ]}>
-      <Plane
-        args={[1.9, 1.28]}
-        position={[0, 0, 0.06]}
-        renderOrder={100}
-        onPointerDown={(event) => {
-          pointerDownRef.current = { x: event.clientX, y: event.clientY };
-        }}
-        onPointerUp={(event) => {
-          const start = pointerDownRef.current;
-          pointerDownRef.current = null;
-          if (!start) return;
-          const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y);
-          if (distance > 7) return;
-          event.stopPropagation();
-          openService();
-        }}
-        onPointerCancel={() => {
-          pointerDownRef.current = null;
-        }}
-        onPointerOver={(event) => {
-          event.stopPropagation();
-          setHovered(true);
-          document.body.style.cursor = "pointer";
-        }}
-        onPointerOut={(event) => {
-          event.stopPropagation();
-          pointerDownRef.current = null;
-          setHovered(false);
-          document.body.style.cursor = "";
-        }}
-      >
-        <meshBasicMaterial
-          transparent
-          opacity={0}
-          depthWrite={false}
-          depthTest={false}
-          side={THREE.DoubleSide}
-        />
-      </Plane>
-
       <Html
         transform
-        distanceFactor={6.4}
+        distanceFactor={3.2}
         position={[0, 0, 0]}
-        zIndexRange={[20, 1]}
-        style={{ pointerEvents: "none", userSelect: "none" }}
+        zIndexRange={[18, 2]}
+        style={{ pointerEvents: "auto", userSelect: "none", WebkitUserSelect: "none" }}
       >
-        <article
-          className="w-[146px] select-none overflow-hidden rounded-[14px] border bg-[#071018]/94 p-2 text-white shadow-2xl backdrop-blur-xl sm:w-[164px] sm:p-2.5"
+        <Link
+          to={service.path}
+          {...(service.hash ? { hash: service.hash } : {})}
+          draggable={false}
+          onDragStart={(event) => event.preventDefault()}
+          onPointerDown={(event) => event.stopPropagation()}
+          onPointerEnter={() => setHovered(true)}
+          onPointerLeave={() => setHovered(false)}
+          className="block w-[292px] select-none overflow-hidden rounded-[28px] border bg-[#071018]/96 p-4 text-white shadow-2xl backdrop-blur-xl sm:w-[328px] sm:p-5"
           style={{
             borderColor: `${service.accent}${hovered ? "cc" : "55"}`,
-            boxShadow: hovered ? `0 18px 44px ${service.accent}30, inset 0 0 22px ${service.accent}10` : "0 14px 36px rgba(0,0,0,.46)",
-            transform: hovered ? "scale(1.055)" : "scale(1)",
-            transition: "transform .26s ease, border-color .26s ease, box-shadow .26s ease",
+            boxShadow: hovered ? `0 36px 88px ${service.accent}30, inset 0 0 44px ${service.accent}10` : "0 28px 72px rgba(0,0,0,.46)",
+            transform: hovered ? "scale(1.035)" : "scale(1)",
+            transition: "transform .22s ease, border-color .22s ease, box-shadow .22s ease",
+            touchAction: "pan-y",
+            WebkitTapHighlightColor: "transparent",
           }}
         >
           <div
-            className="relative h-[68px] overflow-hidden rounded-[10px] border border-white/8 bg-white/[.025] sm:h-[78px]"
+            className="relative h-[136px] overflow-hidden rounded-[20px] border border-white/8 bg-white/[.025] sm:h-[156px]"
             style={{ background: `radial-gradient(circle at 50% 55%, ${service.accent}32, transparent 62%), #03080d` }}
           >
-            <span className="absolute left-1/2 top-1/2 h-[48px] w-[48px] -translate-x-1/2 -translate-y-1/2 rounded-full border" style={{ borderColor: `${service.accent}88` }} />
-            <span className="absolute left-1/2 top-1/2 h-[30px] w-[66px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
-            <span className="absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[8px] font-semibold" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 20px ${service.accent}82` }}>
+            <span className="absolute left-1/2 top-1/2 h-[96px] w-[96px] -translate-x-1/2 -translate-y-1/2 rounded-full border" style={{ borderColor: `${service.accent}88` }} />
+            <span className="absolute left-1/2 top-1/2 h-[60px] w-[132px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
+            <span className="absolute left-1/2 top-1/2 grid h-14 w-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[16px] font-semibold" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 40px ${service.accent}82` }}>
               0{index + 1}
             </span>
             <span className="absolute inset-x-0 top-1/2 h-px opacity-50" style={{ background: `linear-gradient(90deg, transparent, ${service.accent}, transparent)` }} />
           </div>
-          <div className="px-0.5 pb-0.5 pt-2">
-            <small className="block font-mono text-[6px] uppercase tracking-[.16em]" style={{ color: service.accent }}>{service.label}</small>
-            <strong className="mt-1 block text-[11px] font-medium leading-tight sm:text-[12px]">{service.title}</strong>
-            <span className="mt-1.5 flex items-center gap-1 font-mono text-[6px] uppercase tracking-[.13em] text-white/45">
-              abrir área <ArrowUpRight size={8} />
+          <div className="px-1 pb-1 pt-4">
+            <small className="block font-mono text-[12px] uppercase tracking-[.16em]" style={{ color: service.accent }}>{service.label}</small>
+            <strong className="mt-2 block text-[22px] font-medium leading-tight sm:text-[24px]">{service.title}</strong>
+            <span className="mt-3 flex items-center gap-2 font-mono text-[12px] uppercase tracking-[.13em] text-white/50">
+              abrir área <ArrowUpRight size={16} />
             </span>
           </div>
-        </article>
+        </Link>
       </Html>
     </group>
   );
 }
 
-function GalaxyScene({ reduced }: { reduced: boolean }) {
+function GalaxyScene({ reduced, allowCameraDrag }: { reduced: boolean; allowCameraDrag: boolean }) {
   const positions = useCardPositions();
 
   return (
@@ -233,42 +196,59 @@ function GalaxyScene({ reduced }: { reduced: boolean }) {
         <FloatingServiceCard key={service.key} service={service} index={index} cardPosition={positions[index]!} reduced={reduced} />
       ))}
 
-      <OrbitControls
-        enableRotate
-        enablePan={false}
-        enableZoom={false}
-        autoRotate={false}
-        rotateSpeed={0.42}
-        target={[0, 0, -5.8]}
-        minPolarAngle={0.62}
-        maxPolarAngle={2.5}
-      />
+      {allowCameraDrag ? (
+        <OrbitControls
+          enableRotate
+          enablePan={false}
+          enableZoom={false}
+          autoRotate={false}
+          rotateSpeed={0.42}
+          target={[0, 0, -5.8]}
+          minPolarAngle={0.62}
+          maxPolarAngle={2.5}
+        />
+      ) : null}
     </>
   );
 }
 
 export function ServiceConstellation() {
   const reduced = useReducedMotion();
+  const [coarsePointer, setCoarsePointer] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(pointer: coarse)");
+    const update = () => setCoarsePointer(query.matches);
+    update();
+    query.addEventListener?.("change", update);
+    return () => query.removeEventListener?.("change", update);
+  }, []);
 
   return (
-    <div className="relative isolate h-[680px] w-full select-none overflow-hidden sm:h-[760px] lg:h-[820px]">
+    <div className="relative isolate h-[650px] w-full select-none overflow-hidden sm:h-[730px] lg:h-[790px]">
       <Canvas
         camera={{ position: [0, 0.05, 1.2], fov: 60, near: 0.08, far: 120 }}
-        dpr={[1, 1.5]}
+        dpr={[1, 2]}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-        style={{ userSelect: "none" }}
+        style={{
+          userSelect: "none",
+          WebkitUserSelect: "none",
+          touchAction: coarsePointer ? "pan-y" : "none",
+        }}
       >
         <Suspense fallback={null}>
-          <GalaxyScene reduced={reduced} />
+          <GalaxyScene reduced={reduced} allowCameraDrag={!coarsePointer} />
         </Suspense>
       </Canvas>
 
       <div className="pointer-events-none absolute left-5 top-5 z-10 sm:left-8 sm:top-8">
-        <p className="font-mono text-[9px] tracking-[0.2em] text-white/55 uppercase">serviços · arraste para explorar</p>
+        <p className="font-mono text-[9px] tracking-[0.2em] text-white/55 uppercase">
+          {coarsePointer ? "serviços · toque no card para abrir" : "serviços · arraste para explorar"}
+        </p>
       </div>
       <div className="pointer-events-none absolute inset-x-5 bottom-5 z-10 flex justify-center sm:justify-end sm:px-3">
         <span className="rounded-full border border-white/10 bg-black/35 px-3 py-1.5 font-mono text-[8px] tracking-[0.15em] text-white/45 uppercase backdrop-blur-md">
-          arraste para olhar · clique no card · zoom bloqueado
+          {coarsePointer ? "role normalmente · toque no serviço" : "arraste para olhar · clique no card · zoom bloqueado"}
         </span>
       </div>
     </div>
