@@ -68,22 +68,22 @@ export function ServiceScrollAtlas() {
               </div>
             </div>
 
-            <div className="relative mx-auto aspect-square w-[min(76vw,35svh)] shrink-0 perspective-[1200px] sm:w-[min(70vw,39svh)] lg:w-[min(620px,70svh)]">
+            <div className="relative mx-auto aspect-square w-[min(88vw,42svh)] shrink-0 perspective-[1200px] sm:w-[min(78vw,46svh)] lg:w-[min(620px,70svh)]">
               <motion.div className="absolute inset-[10%] rounded-full border border-white/8" style={{ rotate }} />
               <motion.div className="absolute inset-[22%] rounded-full border border-dashed border-white/10" style={{ rotate: reverseRotate }} />
               <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10 sm:h-24 sm:w-24 lg:h-28 lg:w-28" style={{ background: `radial-gradient(circle, ${current.accent}55 0%, ${current.accent}15 38%, transparent 72%)`, boxShadow: `0 0 80px ${current.accent}35` }} />
 
               {services.map((service, index) => {
                 const angle = orbital[index]!;
-                const left = 50 + Math.cos(angle) * 25;
-                const top = 50 + Math.sin(angle) * 25;
+                const left = 50 + Math.cos(angle) * 30;
+                const top = 50 + Math.sin(angle) * 30;
                 const isActive = index === active;
                 return (
                   <motion.div
                     key={service.key}
                     animate={{ left: `${left}%`, top: `${top}%`, scale: isActive ? 1.05 : 0.82, opacity: isActive ? 1 : 0.48, z: isActive ? 64 : -24 }}
                     transition={{ type: "spring", stiffness: 110, damping: 19 }}
-                    className="absolute w-[108px] -translate-x-1/2 -translate-y-1/2 sm:w-[124px] lg:w-[150px]"
+                    className="absolute w-[106px] -translate-x-1/2 -translate-y-1/2 sm:w-[124px] lg:w-[150px]"
                   >
                     <Link
                       to={service.path}
