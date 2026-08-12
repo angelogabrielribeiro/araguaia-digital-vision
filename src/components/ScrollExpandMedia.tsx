@@ -1,6 +1,8 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { type ReactNode, useRef } from "react";
 
+import { SafeVideo } from "@/components/SafeVideo";
+
 type ScrollExpandMediaProps = {
   mediaType?: "video" | "image";
   mediaSrc: string;
@@ -54,8 +56,10 @@ export function ScrollExpandMedia({
               style={{ scale, borderRadius: radius }}
             >
               {mediaType === "video" ? (
-                <video
+                <SafeVideo
                   src={mediaSrc}
+                  fallbackSrc={posterSrc || bgImageSrc}
+                  fallbackAlt={title || "Mídia profissional"}
                   poster={posterSrc}
                   autoPlay
                   muted
