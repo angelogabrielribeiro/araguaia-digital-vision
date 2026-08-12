@@ -75,8 +75,8 @@ export function ServiceScrollAtlas() {
 
               {services.map((service, index) => {
                 const angle = orbital[index]!;
-                const left = 50 + Math.cos(angle) * 29;
-                const top = 50 + Math.sin(angle) * 29;
+                const left = 50 + Math.cos(angle) * 25;
+                const top = 50 + Math.sin(angle) * 25;
                 const isActive = index === active;
                 return (
                   <motion.div
