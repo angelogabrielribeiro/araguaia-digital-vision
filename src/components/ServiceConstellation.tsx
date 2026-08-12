@@ -110,6 +110,7 @@ function FloatingServiceCard({ service, index, cardPosition, reduced }: {
   reduced: boolean;
 }) {
   const groupRef = useRef<THREE.Group>(null);
+  const pointerDownRef = useRef<{ x: number; y: number } | null>(null);
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
 
@@ -129,11 +130,23 @@ function FloatingServiceCard({ service, index, cardPosition, reduced }: {
   return (
     <group ref={groupRef} position={cardPosition.position} rotation={[0, 0, cardPosition.rotationZ]}>
       <Plane
-        args={[2.55, 1.7]}
-        position={[0, 0, -0.015]}
-        onClick={(event) => {
+        args={[1.9, 1.28]}
+        position={[0, 0, 0.06]}
+        renderOrder={100}
+        onPointerDown={(event) => {
+          pointerDownRef.current = { x: event.clientX, y: event.clientY };
+        }}
+        onPointerUp={(event) => {
+          const start = pointerDownRef.current;
+          pointerDownRef.current = null;
+          if (!start) return;
+          const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y);
+          if (distance > 7) return;
           event.stopPropagation();
           openService();
+        }}
+        onPointerCancel={() => {
+          pointerDownRef.current = null;
         }}
         onPointerOver={(event) => {
           event.stopPropagation();
@@ -142,39 +155,52 @@ function FloatingServiceCard({ service, index, cardPosition, reduced }: {
         }}
         onPointerOut={(event) => {
           event.stopPropagation();
+          pointerDownRef.current = null;
           setHovered(false);
-          document.body.style.cursor = "auto";
+          document.body.style.cursor = "";
         }}
       >
-        <meshBasicMaterial transparent opacity={0.001} depthWrite={false} />
+        <meshBasicMaterial
+          transparent
+          opacity={0}
+          depthWrite={false}
+          depthTest={false}
+          side={THREE.DoubleSide}
+        />
       </Plane>
 
-      <Html transform distanceFactor={6.4} position={[0, 0, 0]} style={{ pointerEvents: "none" }}>
+      <Html
+        transform
+        distanceFactor={6.4}
+        position={[0, 0, 0]}
+        zIndexRange={[20, 1]}
+        style={{ pointerEvents: "none", userSelect: "none" }}
+      >
         <article
-          className="w-[180px] overflow-hidden rounded-[16px] border bg-[#071018]/94 p-2.5 text-white shadow-2xl backdrop-blur-xl sm:w-[210px] sm:p-3"
+          className="w-[146px] select-none overflow-hidden rounded-[14px] border bg-[#071018]/94 p-2 text-white shadow-2xl backdrop-blur-xl sm:w-[164px] sm:p-2.5"
           style={{
             borderColor: `${service.accent}${hovered ? "cc" : "55"}`,
-            boxShadow: hovered ? `0 22px 55px ${service.accent}35, inset 0 0 26px ${service.accent}12` : "0 18px 45px rgba(0,0,0,.48)",
-            transform: hovered ? "scale(1.08)" : "scale(1)",
+            boxShadow: hovered ? `0 18px 44px ${service.accent}30, inset 0 0 22px ${service.accent}10` : "0 14px 36px rgba(0,0,0,.46)",
+            transform: hovered ? "scale(1.055)" : "scale(1)",
             transition: "transform .26s ease, border-color .26s ease, box-shadow .26s ease",
           }}
         >
           <div
-            className="relative h-[82px] overflow-hidden rounded-[11px] border border-white/8 sm:h-[96px]"
+            className="relative h-[68px] overflow-hidden rounded-[10px] border border-white/8 bg-white/[.025] sm:h-[78px]"
             style={{ background: `radial-gradient(circle at 50% 55%, ${service.accent}32, transparent 62%), #03080d` }}
           >
-            <span className="absolute left-1/2 top-1/2 h-[56px] w-[56px] -translate-x-1/2 -translate-y-1/2 rounded-full border" style={{ borderColor: `${service.accent}88` }} />
-            <span className="absolute left-1/2 top-1/2 h-[36px] w-[78px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
-            <span className="absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[9px] font-semibold" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 24px ${service.accent}88` }}>
+            <span className="absolute left-1/2 top-1/2 h-[48px] w-[48px] -translate-x-1/2 -translate-y-1/2 rounded-full border" style={{ borderColor: `${service.accent}88` }} />
+            <span className="absolute left-1/2 top-1/2 h-[30px] w-[66px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
+            <span className="absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[8px] font-semibold" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 20px ${service.accent}82` }}>
               0{index + 1}
             </span>
             <span className="absolute inset-x-0 top-1/2 h-px opacity-50" style={{ background: `linear-gradient(90deg, transparent, ${service.accent}, transparent)` }} />
           </div>
-          <div className="px-1 pb-1 pt-2.5">
-            <small className="block font-mono text-[7px] uppercase tracking-[.18em]" style={{ color: service.accent }}>{service.label}</small>
-            <strong className="mt-1.5 block text-[13px] font-medium leading-tight sm:text-[14px]">{service.title}</strong>
-            <span className="mt-2 flex items-center gap-1 font-mono text-[7px] uppercase tracking-[.15em] text-white/45">
-              abrir área <ArrowUpRight size={9} />
+          <div className="px-0.5 pb-0.5 pt-2">
+            <small className="block font-mono text-[6px] uppercase tracking-[.16em]" style={{ color: service.accent }}>{service.label}</small>
+            <strong className="mt-1 block text-[11px] font-medium leading-tight sm:text-[12px]">{service.title}</strong>
+            <span className="mt-1.5 flex items-center gap-1 font-mono text-[6px] uppercase tracking-[.13em] text-white/45">
+              abrir área <ArrowUpRight size={8} />
             </span>
           </div>
         </article>
@@ -225,11 +251,12 @@ export function ServiceConstellation() {
   const reduced = useReducedMotion();
 
   return (
-    <div className="relative h-[680px] w-full overflow-hidden sm:h-[760px] lg:h-[820px]">
+    <div className="relative isolate h-[680px] w-full select-none overflow-hidden sm:h-[760px] lg:h-[820px]">
       <Canvas
         camera={{ position: [0, 0.05, 1.2], fov: 60, near: 0.08, far: 120 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        style={{ userSelect: "none" }}
       >
         <Suspense fallback={null}>
           <GalaxyScene reduced={reduced} />
