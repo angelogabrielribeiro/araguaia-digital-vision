@@ -5,11 +5,13 @@ import { useMemo, useRef, useState } from "react";
 
 import { MeteorStreaks } from "@/components/MeteorStreaks";
 import { services } from "@/config/site";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function ServiceScrollAtlas() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const [active, setActive] = useState(0);
+  const isMobile = useIsMobile();
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 280]);
   const reverseRotate = useTransform(scrollYProgress, [0, 1], [0, -196]);
   const drift = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
@@ -41,7 +43,7 @@ export function ServiceScrollAtlas() {
         </motion.div>
 
         <div className="relative mx-auto flex h-full max-w-7xl items-center px-5 py-4 lg:px-8 lg:py-6">
-          <div className="grid h-full w-full min-h-0 content-center items-center gap-3 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
+          <div className="grid h-full w-full min-h-0 content-center items-center gap-4 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
             <div className="relative z-20 mx-auto w-full max-w-xl lg:mx-0">
               <p className="eyebrow">Mapa guiado pelo scroll</p>
               <div className="mt-3 flex items-center gap-3 font-mono text-[8px] uppercase tracking-[.18em] text-white/38 lg:mt-5 lg:text-[9px]">
@@ -68,22 +70,24 @@ export function ServiceScrollAtlas() {
               </div>
             </div>
 
-            <div className="relative mx-auto aspect-square w-[min(88vw,42svh)] shrink-0 perspective-[1200px] sm:w-[min(78vw,46svh)] lg:w-[min(620px,70svh)]">
+            <div className="relative mx-auto aspect-square w-[min(90vw,44svh)] shrink-0 perspective-[1200px] sm:w-[min(78vw,46svh)] lg:w-[min(620px,70svh)]">
               <motion.div className="absolute inset-[10%] rounded-full border border-white/8" style={{ rotate }} />
               <motion.div className="absolute inset-[22%] rounded-full border border-dashed border-white/10" style={{ rotate: reverseRotate }} />
               <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10 sm:h-24 sm:w-24 lg:h-28 lg:w-28" style={{ background: `radial-gradient(circle, ${current.accent}55 0%, ${current.accent}15 38%, transparent 72%)`, boxShadow: `0 0 80px ${current.accent}35` }} />
 
               {services.map((service, index) => {
                 const angle = orbital[index]!;
-                const left = 50 + Math.cos(angle) * 30;
-                const top = 50 + Math.sin(angle) * 30;
+                const horizontalRadius = isMobile ? 36 : 30;
+                const verticalRadius = isMobile ? 28 : 30;
+                const left = 50 + Math.cos(angle) * horizontalRadius;
+                const top = 50 + Math.sin(angle) * verticalRadius;
                 const isActive = index === active;
                 return (
                   <motion.div
                     key={service.key}
-                    animate={{ left: `${left}%`, top: `${top}%`, scale: isActive ? 1.05 : 0.82, opacity: isActive ? 1 : 0.48, z: isActive ? 64 : -24 }}
+                    animate={{ left: `${left}%`, top: `${top}%`, scale: isActive ? 1.03 : 0.88, opacity: isActive ? 1 : 0.5, z: isActive ? 64 : -24 }}
                     transition={{ type: "spring", stiffness: 110, damping: 19 }}
-                    className="absolute w-[106px] -translate-x-1/2 -translate-y-1/2 sm:w-[124px] lg:w-[150px]"
+                    className="absolute w-[102px] -translate-x-1/2 -translate-y-1/2 sm:w-[124px] lg:w-[150px]"
                   >
                     <Link
                       to={service.path}
@@ -91,8 +95,8 @@ export function ServiceScrollAtlas() {
                       className="group block overflow-hidden rounded-xl border bg-black/50 p-2 backdrop-blur-xl transition-transform hover:-translate-y-1.5 lg:rounded-2xl lg:p-2.5"
                       style={{ borderColor: isActive ? `${service.accent}aa` : "rgba(255,255,255,.12)", boxShadow: isActive ? `0 16px 42px ${service.accent}24` : "0 12px 26px rgba(0,0,0,.35)" }}
                     >
-                      <div className="relative h-12 overflow-hidden rounded-lg border border-white/8 bg-white/[.025] sm:h-14 lg:h-[68px] lg:rounded-xl">
-                        <span className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border sm:h-9 sm:w-9 lg:h-11 lg:w-11" style={{ borderColor: `${service.accent}80`, boxShadow: `0 0 24px ${service.accent}45` }} />
+                      <div className="relative h-11 overflow-hidden rounded-lg border border-white/8 bg-white/[.025] sm:h-14 lg:h-[68px] lg:rounded-xl">
+                        <span className="absolute left-1/2 top-1/2 h-7 w-7 -translate-x-1/2 -translate-y-1/2 rounded-full border sm:h-9 sm:w-9 lg:h-11 lg:w-11" style={{ borderColor: `${service.accent}80`, boxShadow: `0 0 24px ${service.accent}45` }} />
                         <span className="absolute left-1/2 top-1/2 h-px w-full -translate-x-1/2 -translate-y-1/2" style={{ background: `linear-gradient(90deg,transparent,${service.accent},transparent)` }} />
                       </div>
                       <small className="mt-2 block font-mono text-[5px] uppercase tracking-[.12em] sm:text-[6px] lg:text-[7px]" style={{ color: service.accent }}>0{index + 1} · {service.label}</small>
