@@ -54,11 +54,11 @@ function RealMediaGallery() {
       </div>
       <div className="professional-photo-grid">
         <div className="professional-media-shell">
-          <img src={site.media.workingVideoPoster} alt="Profissional em atendimento no escritório" loading="lazy" />
+          <img src={site.media.workingVideoPoster} alt="Profissional em atendimento no escritório" loading="eager" decoding="async" />
           <span className="professional-media-kicker">ambiente de trabalho</span>
         </div>
         <div className="professional-media-shell">
-          <img src={site.media.portrait} alt={`Retrato de ${displayName}`} loading="lazy" />
+          <img src={site.media.portrait} alt={`Retrato de ${displayName}`} loading="eager" decoding="async" />
           <span className="professional-media-kicker">retrato profissional</span>
         </div>
       </div>
@@ -115,7 +115,7 @@ function SobrePage() {
       <section className="border-t border-border py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-5 lg:px-8">
           <Reveal><AboutCopy /></Reveal>
-          <Reveal delay={0.1}><RealMediaGallery /></Reveal>
+          <RealMediaGallery />
         </div>
       </section>
     </>
