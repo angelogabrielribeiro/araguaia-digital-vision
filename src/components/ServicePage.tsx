@@ -26,9 +26,25 @@ type Props = {
 
 export function ServicePage({ service, mode, narrativeLabel, steps, process, faq, children }: Props) {
   const reduced = useReducedMotion();
+  const themeStyle = {
+    "--background": `color-mix(in srgb, ${service.accent} 7%, #071018)`,
+    "--surface": `color-mix(in srgb, ${service.accent} 10%, #0a151d)`,
+    "--surface-2": `color-mix(in srgb, ${service.accent} 14%, #0e1b24)`,
+    "--card": `color-mix(in srgb, ${service.accent} 9%, #0a151d)`,
+    "--secondary": `color-mix(in srgb, ${service.accent} 13%, #12202a)`,
+    "--muted": `color-mix(in srgb, ${service.accent} 10%, #12202a)`,
+    "--accent": `color-mix(in srgb, ${service.accent} 20%, #132633)`,
+    "--border": `color-mix(in srgb, ${service.accent} 16%, rgba(255,255,255,.10))`,
+    "--hairline": `color-mix(in srgb, ${service.accent} 14%, rgba(255,255,255,.08))`,
+    "--tech": service.accent,
+    "--tech-deep": `color-mix(in srgb, ${service.accent} 58%, #10243d)`,
+    "--primary": service.accent,
+    "--ring": service.accent,
+    "--gradient-tech": `linear-gradient(135deg, color-mix(in srgb, ${service.accent} 55%, #10243d), ${service.accent})`,
+  } as CSSProperties;
 
   return (
-    <>
+    <main style={themeStyle}>
       <section className="relative flex min-h-[88vh] items-end overflow-hidden">
         <Stage className="absolute inset-0" cameraPosition={[0, 0, 6]}>
           <AtmospherePlane hue={service.hue} intensity={0.98} reduced={reduced} />
@@ -74,7 +90,7 @@ export function ServicePage({ service, mode, narrativeLabel, steps, process, faq
                     radius={16}
                     thickness={1.25}
                     glow={i % 2 === 0}
-                    colors={[service.accent, i % 2 === 0 ? "#ffffff" : "#8aa4ad"]}
+                    colors={[service.accent, i % 2 === 0 ? "#ffffff" : service.accent]}
                     innerClassName="group h-full min-h-[150px] rounded-[15px] bg-background/90 p-6 transition-all duration-300 hover:-translate-y-1.5 hover:bg-surface/90"
                   >
                     <span className="font-mono text-[10px] tracking-[0.16em] text-muted-foreground">0{i + 1}</span>
@@ -156,6 +172,6 @@ export function ServicePage({ service, mode, narrativeLabel, steps, process, faq
           </Reveal>
         </div>
       </section>
-    </>
+    </main>
   );
 }
