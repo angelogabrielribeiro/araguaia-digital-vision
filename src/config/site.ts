@@ -26,12 +26,12 @@ export const site = {
     googleSearchConsoleVerification: "",
   },
   media: {
-    portrait: "/media/pai-retrato-hq.webp",
-    workingVideo: "/media/pai-trabalho-hq.mp4",
-    workingVideoPoster: "/media/pai-escritorio-hq.webp",
+    portrait: "/media/pai-retrato.webp",
+    workingVideo: "/media/pai-trabalho.webm",
+    workingVideoPoster: "/media/pai-escritorio.webp",
     gallery: [
-      { src: "/media/pai-escritorio-hq.webp", alt: "Profissional em atendimento no escritório" },
-      { src: "/media/pai-retrato-hq.webp", alt: "Retrato profissional" },
+      { src: "/media/pai-escritorio.webp", alt: "Profissional em atendimento no escritório" },
+      { src: "/media/pai-retrato.webp", alt: "Retrato profissional" },
     ] as { src: string; alt: string }[],
   },
   social: {
