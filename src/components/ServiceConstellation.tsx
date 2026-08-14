@@ -1,4 +1,3 @@
-import { Environment, Sphere } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Link } from "@tanstack/react-router";
 import { ArrowUpRight } from "lucide-react";
@@ -19,46 +18,53 @@ type DragState = {
   y: number;
   yaw: number;
   pitch: number;
-  horizontal: boolean;
 } | null;
 
-function useCardPositions() {
-  return useMemo<CardPosition[]>(() => {
-    const mobile = typeof window !== "undefined" && window.innerWidth < 768;
-    if (mobile) {
-      return [
-        { position: [-1.18, 1.72, -4.8], rotationZ: -0.045 },
-        { position: [1.18, 0.82, -6.15], rotationZ: 0.04 },
-        { position: [-1.23, -0.26, -7.25], rotationZ: 0.03 },
-        { position: [1.18, -1.34, -5.5], rotationZ: -0.04 },
-        { position: [0, -2.28, -8.1], rotationZ: 0.015 },
-      ];
-    }
+type TouchState = {
+  x: number;
+  y: number;
+  yaw: number;
+  pitch: number;
+} | null;
 
-    return [
-      { position: [-2.8, 1.72, -5.1], rotationZ: -0.055 },
-      { position: [2.7, 1.62, -6.6], rotationZ: 0.045 },
-      { position: [-3.1, -1.22, -7.35], rotationZ: 0.035 },
-      { position: [2.95, -1.3, -5.7], rotationZ: -0.045 },
-      { position: [0.12, 2.68, -8.55], rotationZ: 0.018 },
-    ];
-  }, []);
+const MAX_PITCH = 1.08;
+
+function pointFromView(yaw: number, pitch: number, radius: number): [number, number, number] {
+  const cosPitch = Math.cos(pitch);
+  return [
+    Math.sin(yaw) * cosPitch * radius,
+    Math.sin(pitch) * radius,
+    -Math.cos(yaw) * cosPitch * radius,
+  ];
+}
+
+function useCardPositions() {
+  return useMemo<CardPosition[]>(
+    () => [
+      { position: pointFromView(-0.42, 0.2, 6.7), rotationZ: -0.045 },
+      { position: pointFromView(0.47, 0.09, 7.7), rotationZ: 0.04 },
+      { position: pointFromView(-1.02, -0.25, 8.2), rotationZ: 0.03 },
+      { position: pointFromView(1.08, -0.2, 7.4), rotationZ: -0.04 },
+      { position: pointFromView(2.55, 0.28, 8.8), rotationZ: 0.015 },
+    ],
+    [],
+  );
 }
 
 function Starfield({ reduced }: { reduced: boolean }) {
   const ref = useRef<THREE.Points>(null);
   const geometry = useMemo(() => {
     const mobile = typeof window !== "undefined" && window.innerWidth < 768;
-    const count = reduced ? 2400 : mobile ? 5000 : 9000;
+    const count = reduced ? 2200 : mobile ? 5200 : 9000;
     const positions = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
       const theta = i * 2.399963229728653;
-      const radius = 7 + ((i * 37) % 1000) / 25;
-      const spreadY = (((i * 91) % 1000) / 1000 - 0.5) * 32;
+      const radius = 6.5 + ((i * 37) % 1000) / 24;
+      const spreadY = (((i * 91) % 1000) / 1000 - 0.5) * 34;
       positions[i * 3] = Math.cos(theta) * radius;
       positions[i * 3 + 1] = spreadY;
-      positions[i * 3 + 2] = Math.sin(theta) * radius - 3;
+      positions[i * 3 + 2] = Math.sin(theta) * radius;
     }
 
     const next = new THREE.BufferGeometry();
@@ -68,52 +74,13 @@ function Starfield({ reduced }: { reduced: boolean }) {
 
   useFrame((_, delta) => {
     if (!ref.current || reduced) return;
-    ref.current.rotation.y += delta * 0.0035;
-    ref.current.rotation.x += delta * 0.0008;
+    ref.current.rotation.y += delta * 0.0014;
   });
 
   return (
     <points ref={ref} geometry={geometry}>
-      <pointsMaterial color="#e9fbff" size={0.055} transparent opacity={0.74} sizeAttenuation />
+      <pointsMaterial color="#eefcff" size={0.05} transparent opacity={0.8} sizeAttenuation />
     </points>
-  );
-}
-
-function AmbientFragments({ reduced }: { reduced: boolean }) {
-  const group = useRef<THREE.Group>(null);
-  const fragments = useMemo(
-    () =>
-      Array.from({ length: reduced ? 7 : 18 }, (_, i) => ({
-        position: [
-          Math.sin(i * 2.31) * (4.6 + (i % 3) * 1.65),
-          Math.cos(i * 1.73) * (2.1 + (i % 4) * 0.72),
-          -4.8 - (i % 7) * 1.45,
-        ] as [number, number, number],
-        scale: 0.12 + (i % 4) * 0.05,
-      })),
-    [reduced],
-  );
-
-  useFrame((_, delta) => {
-    if (!group.current || reduced) return;
-    group.current.rotation.z += delta * 0.003;
-    group.current.rotation.y -= delta * 0.0015;
-  });
-
-  return (
-    <group ref={group}>
-      {fragments.map((fragment, index) => (
-        <mesh key={index} position={fragment.position} rotation={[0.4, index * 0.7, index * 0.2]} scale={fragment.scale}>
-          <octahedronGeometry args={[1, 0]} />
-          <meshBasicMaterial
-            color={index % 3 === 0 ? "#7ad9ff" : index % 3 === 1 ? "#89ffd0" : "#a8a0ff"}
-            wireframe
-            transparent
-            opacity={0.25}
-          />
-        </mesh>
-      ))}
-    </group>
   );
 }
 
@@ -132,31 +99,39 @@ function SceneController({
 }) {
   const projected = useMemo(() => new THREE.Vector3(), []);
   const world = useMemo(() => new THREE.Vector3(), []);
-  const target = useMemo(() => new THREE.Vector3(0, 0, -5.8), []);
+  const lookTarget = useMemo(() => new THREE.Vector3(), []);
 
   useFrame(({ camera, clock, size }) => {
     const yaw = yawRef.current;
-    const pitch = THREE.MathUtils.clamp(pitchRef.current, -0.34, 0.34);
-    const radius = 7;
+    const pitch = THREE.MathUtils.clamp(pitchRef.current, -MAX_PITCH, MAX_PITCH);
+    const cosPitch = Math.cos(pitch);
 
-    camera.position.set(
-      Math.sin(yaw) * radius,
-      0.05 + Math.sin(pitch) * 4.1,
-      target.z + Math.cos(yaw) * radius,
+    camera.position.set(0, 0, 0.35);
+    lookTarget.set(
+      Math.sin(yaw) * cosPitch,
+      Math.sin(pitch),
+      0.35 - Math.cos(yaw) * cosPitch,
     );
-    camera.lookAt(target);
+    camera.lookAt(lookTarget);
     camera.updateMatrixWorld();
+
+    const mobile = size.width < 768;
 
     positions.forEach((card, index) => {
       const element = cardRefs.current[index];
       if (!element) return;
 
-      const floatY = reduced ? 0 : Math.sin(clock.elapsedTime * 0.55 + index * 1.13) * 0.11;
-      const floatX = reduced ? 0 : Math.cos(clock.elapsedTime * 0.31 + index) * 0.05;
+      const floatY = reduced ? 0 : Math.sin(clock.elapsedTime * 0.48 + index * 1.13) * 0.075;
+      const floatX = reduced ? 0 : Math.cos(clock.elapsedTime * 0.29 + index) * 0.035;
       world.set(card.position[0] + floatX, card.position[1] + floatY, card.position[2]);
       projected.copy(world).project(camera);
 
-      const visible = projected.z > -1 && projected.z < 1 && Math.abs(projected.x) < 1.15 && Math.abs(projected.y) < 1.13;
+      const visible =
+        projected.z > -1 &&
+        projected.z < 1 &&
+        Math.abs(projected.x) < 1.22 &&
+        Math.abs(projected.y) < 1.18;
+
       if (!visible) {
         element.style.opacity = "0";
         element.style.pointerEvents = "none";
@@ -166,31 +141,21 @@ function SceneController({
       const x = (projected.x * 0.5 + 0.5) * size.width;
       const y = (-projected.y * 0.5 + 0.5) * size.height;
       const distance = camera.position.distanceTo(world);
-      const scale = THREE.MathUtils.clamp(1.12 - (distance - 6) * 0.04, 0.82, 1.04);
+      const depthScale = THREE.MathUtils.clamp(1.1 - (distance - 6) * 0.045, 0.78, 1.03);
+      const scale = mobile ? depthScale * 0.84 : depthScale;
       const rotate = (card.rotationZ * 180) / Math.PI;
 
       element.style.opacity = "1";
       element.style.pointerEvents = "auto";
-      element.style.zIndex = String(Math.max(1, Math.round(90 - distance * 4)));
+      element.style.zIndex = String(Math.max(1, Math.round(100 - distance * 5)));
       element.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${rotate}deg) scale(${scale})`;
     });
   });
 
   return (
     <>
-      <color attach="background" args={["#010306"]} />
-      <ambientLight intensity={0.5} />
-      <pointLight position={[6, 7, 1]} intensity={28} color="#6fd8ff" distance={30} />
-      <pointLight position={[-7, -5, -2]} intensity={20} color="#72ddb8" distance={30} />
-      <Environment preset="night" />
+      <color attach="background" args={["#010205"]} />
       <Starfield reduced={reduced} />
-      <AmbientFragments reduced={reduced} />
-      <Sphere args={[5.3, 48, 48]} position={[0, 0, -5.5]}>
-        <meshBasicMaterial color="#59c9df" transparent opacity={0.04} wireframe />
-      </Sphere>
-      <Sphere args={[8.6, 48, 48]} position={[0, 0, -5.9]}>
-        <meshBasicMaterial color="#4da5c7" transparent opacity={0.018} wireframe />
-      </Sphere>
     </>
   );
 }
@@ -202,6 +167,7 @@ export function ServiceConstellation() {
   const yawRef = useRef(0);
   const pitchRef = useRef(0);
   const dragRef = useRef<DragState>(null);
+  const touchRef = useRef<TouchState>(null);
   const [coarsePointer, setCoarsePointer] = useState(false);
 
   useEffect(() => {
@@ -215,41 +181,32 @@ export function ServiceConstellation() {
   return (
     <div
       className="relative isolate h-[680px] w-full select-none overflow-hidden sm:h-[760px] lg:h-[820px]"
-      style={{ touchAction: coarsePointer ? "pan-y" : "none", WebkitUserSelect: "none", userSelect: "none" }}
+      style={{
+        touchAction: coarsePointer ? "pan-y" : "none",
+        WebkitUserSelect: "none",
+        userSelect: "none",
+      }}
       onDragStart={(event) => event.preventDefault()}
       onPointerDown={(event) => {
-        if (event.button !== 0) return;
+        if (coarsePointer || event.button !== 0) return;
         dragRef.current = {
           pointerId: event.pointerId,
           x: event.clientX,
           y: event.clientY,
           yaw: yawRef.current,
           pitch: pitchRef.current,
-          horizontal: false,
         };
-        if (!coarsePointer) event.currentTarget.setPointerCapture?.(event.pointerId);
+        event.currentTarget.setPointerCapture?.(event.pointerId);
       }}
       onPointerMove={(event) => {
+        if (coarsePointer) return;
         const drag = dragRef.current;
         if (!drag || drag.pointerId !== event.pointerId) return;
+
         const dx = event.clientX - drag.x;
         const dy = event.clientY - drag.y;
-
-        if (coarsePointer) {
-          if (!drag.horizontal) {
-            if (Math.abs(dy) > Math.abs(dx) + 7) {
-              dragRef.current = null;
-              return;
-            }
-            if (Math.abs(dx) < 10 || Math.abs(dx) <= Math.abs(dy) + 5) return;
-            drag.horizontal = true;
-          }
-          yawRef.current = drag.yaw - dx * 0.006;
-          return;
-        }
-
-        yawRef.current = drag.yaw - dx * 0.0048;
-        pitchRef.current = THREE.MathUtils.clamp(drag.pitch - dy * 0.0032, -0.34, 0.34);
+        yawRef.current = drag.yaw - dx * 0.0052;
+        pitchRef.current = THREE.MathUtils.clamp(drag.pitch - dy * 0.0044, -MAX_PITCH, MAX_PITCH);
       }}
       onPointerUp={(event) => {
         if (dragRef.current?.pointerId === event.pointerId) dragRef.current = null;
@@ -258,9 +215,38 @@ export function ServiceConstellation() {
       onPointerCancel={() => {
         dragRef.current = null;
       }}
+      onTouchStart={(event) => {
+        if (!coarsePointer || event.touches.length !== 1) return;
+        const touch = event.touches[0];
+        touchRef.current = {
+          x: touch.clientX,
+          y: touch.clientY,
+          yaw: yawRef.current,
+          pitch: pitchRef.current,
+        };
+      }}
+      onTouchMove={(event) => {
+        if (!coarsePointer || event.touches.length !== 1 || !touchRef.current) return;
+        const touch = event.touches[0];
+        const dx = touch.clientX - touchRef.current.x;
+        const dy = touch.clientY - touchRef.current.y;
+
+        yawRef.current = touchRef.current.yaw - dx * 0.0062;
+        pitchRef.current = THREE.MathUtils.clamp(
+          touchRef.current.pitch - dy * 0.0039,
+          -MAX_PITCH,
+          MAX_PITCH,
+        );
+      }}
+      onTouchEnd={() => {
+        touchRef.current = null;
+      }}
+      onTouchCancel={() => {
+        touchRef.current = null;
+      }}
     >
       <Canvas
-        camera={{ position: [0, 0.05, 1.2], fov: 60, near: 0.08, far: 120 }}
+        camera={{ position: [0, 0, 0.35], fov: 60, near: 0.08, far: 120 }}
         dpr={[1, 2]}
         gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
         style={{ pointerEvents: "none" }}
@@ -290,9 +276,11 @@ export function ServiceConstellation() {
               {...(service.hash ? { hash: service.hash } : {})}
               draggable={false}
               onPointerDown={(event) => event.stopPropagation()}
+              onTouchStart={(event) => event.stopPropagation()}
+              onTouchMove={(event) => event.stopPropagation()}
               onClick={(event) => event.stopPropagation()}
               onDragStart={(event) => event.preventDefault()}
-              className="pointer-events-auto group block w-[164px] select-none overflow-hidden rounded-[17px] border bg-[#071018]/96 p-2.5 text-white shadow-2xl backdrop-blur-xl sm:w-[190px] sm:p-3 lg:w-[202px]"
+              className="pointer-events-auto group block w-[138px] select-none overflow-hidden rounded-[15px] border bg-[#071018]/96 p-2 text-white shadow-2xl backdrop-blur-xl sm:w-[170px] sm:p-2.5 lg:w-[202px] lg:rounded-[17px] lg:p-3"
               style={{
                 borderColor: `${service.accent}66`,
                 boxShadow: `0 20px 52px rgba(0,0,0,.52), 0 0 22px ${service.accent}12`,
@@ -301,21 +289,47 @@ export function ServiceConstellation() {
               }}
             >
               <div
-                className="relative h-[76px] overflow-hidden rounded-[11px] border border-white/8 bg-white/[.025] sm:h-[90px] lg:h-[96px]"
-                style={{ background: `radial-gradient(circle at 50% 55%, ${service.accent}32, transparent 62%), #03080d` }}
+                className="relative h-[62px] overflow-hidden rounded-[10px] border border-white/8 bg-white/[.025] sm:h-[78px] lg:h-[96px] lg:rounded-[11px]"
+                style={{
+                  background: `radial-gradient(circle at 50% 55%, ${service.accent}32, transparent 62%), #03080d`,
+                }}
               >
-                <span className="absolute left-1/2 top-1/2 h-[52px] w-[52px] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-transform duration-300 group-hover:scale-110" style={{ borderColor: `${service.accent}88` }} />
-                <span className="absolute left-1/2 top-1/2 h-[34px] w-[72px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed" style={{ borderColor: `${service.accent}66` }} />
-                <span className="absolute left-1/2 top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[9px] font-semibold sm:h-9 sm:w-9 sm:text-[10px]" style={{ background: service.accent, color: "#031018", boxShadow: `0 0 24px ${service.accent}82` }}>
+                <span
+                  className="absolute left-1/2 top-1/2 h-[42px] w-[42px] -translate-x-1/2 -translate-y-1/2 rounded-full border transition-transform duration-300 group-hover:scale-110 sm:h-[48px] sm:w-[48px] lg:h-[52px] lg:w-[52px]"
+                  style={{ borderColor: `${service.accent}88` }}
+                />
+                <span
+                  className="absolute left-1/2 top-1/2 h-[28px] w-[58px] -translate-x-1/2 -translate-y-1/2 rotate-[-22deg] rounded-full border border-dashed sm:h-[31px] sm:w-[65px] lg:h-[34px] lg:w-[72px]"
+                  style={{ borderColor: `${service.accent}66` }}
+                />
+                <span
+                  className="absolute left-1/2 top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full font-mono text-[8px] font-semibold sm:h-8 sm:w-8 sm:text-[9px] lg:h-9 lg:w-9 lg:text-[10px]"
+                  style={{
+                    background: service.accent,
+                    color: "#031018",
+                    boxShadow: `0 0 24px ${service.accent}82`,
+                  }}
+                >
                   0{index + 1}
                 </span>
-                <span className="absolute inset-x-0 top-1/2 h-px opacity-50" style={{ background: `linear-gradient(90deg, transparent, ${service.accent}, transparent)` }} />
+                <span
+                  className="absolute inset-x-0 top-1/2 h-px opacity-50"
+                  style={{ background: `linear-gradient(90deg, transparent, ${service.accent}, transparent)` }}
+                />
               </div>
-              <div className="px-1 pb-1 pt-2.5">
-                <small className="block font-mono text-[7px] uppercase tracking-[.16em] sm:text-[8px]" style={{ color: service.accent }}>{service.label}</small>
-                <strong className="mt-1.5 block text-[12px] font-medium leading-tight sm:text-[14px]">{service.title}</strong>
-                <span className="mt-2 flex items-center gap-1 font-mono text-[7px] uppercase tracking-[.13em] text-white/50 sm:text-[8px]">
-                  abrir área <ArrowUpRight size={10} />
+
+              <div className="px-0.5 pb-0.5 pt-2 sm:px-1 sm:pb-1 sm:pt-2.5">
+                <small
+                  className="block font-mono text-[6px] uppercase tracking-[.14em] sm:text-[7px] lg:text-[8px]"
+                  style={{ color: service.accent }}
+                >
+                  {service.label}
+                </small>
+                <strong className="mt-1 block text-[10px] font-medium leading-tight sm:mt-1.5 sm:text-[12px] lg:text-[14px]">
+                  {service.title}
+                </strong>
+                <span className="mt-1.5 flex items-center gap-1 font-mono text-[6px] uppercase tracking-[.11em] text-white/50 sm:mt-2 sm:text-[7px] lg:text-[8px]">
+                  abrir área <ArrowUpRight size={9} className="lg:h-[10px] lg:w-[10px]" />
                 </span>
               </div>
             </Link>
@@ -324,13 +338,18 @@ export function ServiceConstellation() {
       </div>
 
       <div className="pointer-events-none absolute left-5 top-5 z-30 sm:left-8 sm:top-8">
-        <p className="font-mono text-[9px] tracking-[0.2em] text-white/55 uppercase">
-          {coarsePointer ? "serviços · arraste para os lados · role normalmente" : "serviços · arraste para explorar"}
+        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/55">
+          {coarsePointer
+            ? "serviços · arraste para olhar em qualquer direção"
+            : "serviços · arraste para explorar"}
         </p>
       </div>
+
       <div className="pointer-events-none absolute inset-x-5 bottom-5 z-30 flex justify-center sm:justify-end sm:px-3">
-        <span className="rounded-full border border-white/10 bg-black/35 px-3 py-1.5 font-mono text-[8px] tracking-[0.15em] text-white/45 uppercase backdrop-blur-md">
-          {coarsePointer ? "toque no card para abrir · scroll vertical liberado" : "arraste para olhar · clique no card · zoom bloqueado"}
+        <span className="rounded-full border border-white/10 bg-black/35 px-3 py-1.5 font-mono text-[8px] uppercase tracking-[0.15em] text-white/45 backdrop-blur-md">
+          {coarsePointer
+            ? "arraste o espaço · role a página normalmente · toque no card"
+            : "arraste para olhar · clique no card · zoom bloqueado"}
         </span>
       </div>
     </div>
