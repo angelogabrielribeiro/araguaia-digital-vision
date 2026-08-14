@@ -7,9 +7,9 @@
  */
 
 export const site = {
-  professionalName: "",
+  professionalName: "Wangelo Silva dos Santos",
   professionalRole: "Tecnologia da Informação • Suporte • Finanças e Contabilidade",
-  shortName: "",
+  shortName: "WVS Informática",
   email: "",
   whatsappNumber: "559491049244",
   phoneDisplay: "+55 94 91049244",
@@ -26,6 +26,7 @@ export const site = {
     googleSearchConsoleVerification: "",
   },
   media: {
+    logo: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/c60daf31-6091-4a04-ac53-767925f84eec.png",
     portrait: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/3ae4c872-26a9-490b-a498-43ed03d3e710.png",
     workingVideo: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/829c7c81-7e79-4269-b840-ae2b9baece58.mp4",
     workingVideoPoster: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/d1c06792-d991-41c0-9377-9c94f372cc32.png",
@@ -40,10 +41,10 @@ export const site = {
   },
 } as const;
 
-export const brandName = "Atendimento Profissional";
-export const brandTagline = "TI • Finanças • Tributos";
-export const displayName = site.professionalName || brandName;
-export const displayShortName = site.shortName || site.professionalName || brandName;
+export const brandName = "WVS Informática";
+export const brandTagline = "TI • Suporte • Finanças • Contabilidade";
+export const displayName = site.shortName || brandName;
+export const displayShortName = site.shortName || brandName;
 
 export type ServiceKey = "ti" | "manutencao" | "software" | "financas" | "contabilidade";
 
