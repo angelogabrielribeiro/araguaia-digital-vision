@@ -44,21 +44,23 @@ function AboutCopy() {
 }
 
 function RealMediaGallery() {
+  const professionalName = site.professionalName || displayName;
+
   return (
     <div className="mx-auto mt-14 max-w-5xl">
       <div className="mb-7">
         <p className="eyebrow">Presença real</p>
         <h2 className="mt-3 max-w-2xl font-display text-3xl leading-tight text-foreground lg:text-4xl">
-          O profissional por trás do atendimento.
+          {professionalName}, por trás do atendimento.
         </h2>
       </div>
       <div className="professional-photo-grid">
         <div className="professional-media-shell">
-          <img src={site.media.workingVideoPoster} alt="Profissional em atendimento no escritório" loading="eager" decoding="async" />
+          <img src={site.media.workingVideoPoster} alt={`${professionalName} em atendimento no escritório`} loading="eager" decoding="async" />
           <span className="professional-media-kicker">ambiente de trabalho</span>
         </div>
         <div className="professional-media-shell">
-          <img src={site.media.portrait} alt={`Retrato de ${displayName}`} loading="eager" decoding="async" />
+          <img src={site.media.portrait} alt={`Retrato de ${professionalName}`} loading="eager" decoding="async" />
           <span className="professional-media-kicker">retrato profissional</span>
         </div>
       </div>
@@ -85,7 +87,7 @@ function SobrePage() {
         mediaSrc={site.media.workingVideo}
         posterSrc={site.media.workingVideoPoster || site.media.portrait}
         bgImageSrc={site.media.workingVideoPoster || site.media.portrait}
-        title="Atendimento Profissional"
+        title={site.professionalName || displayName}
         date={`${site.location.city} · ${site.location.state}`}
         scrollToExpand="Role para expandir"
         textBlend
