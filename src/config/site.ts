@@ -26,12 +26,12 @@ export const site = {
     googleSearchConsoleVerification: "",
   },
   media: {
-    portrait: "/media/pai-retrato.webp",
-    workingVideo: "/media/pai-trabalho.webm",
-    workingVideoPoster: "/media/pai-escritorio.webp",
+    portrait: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/3ae4c872-26a9-490b-a498-43ed03d3e710.png",
+    workingVideo: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/829c7c81-7e79-4269-b840-ae2b9baece58.mp4",
+    workingVideoPoster: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/d1c06792-d991-41c0-9377-9c94f372cc32.png",
     gallery: [
-      { src: "/media/pai-escritorio.webp", alt: "Profissional em atendimento no escritório" },
-      { src: "/media/pai-retrato.webp", alt: "Retrato profissional" },
+      { src: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/d1c06792-d991-41c0-9377-9c94f372cc32.png", alt: "Profissional em atendimento no escritório" },
+      { src: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/3ae4c872-26a9-490b-a498-43ed03d3e710.png", alt: "Retrato profissional" },
     ] as { src: string; alt: string }[],
   },
   social: {
