@@ -43,9 +43,9 @@ function useCardPositions() {
     () => [
       { position: pointFromView(-0.42, 0.2, 6.7), rotationZ: -0.045 },
       { position: pointFromView(0.47, 0.09, 7.7), rotationZ: 0.04 },
-      { position: pointFromView(-1.02, -0.25, 8.2), rotationZ: 0.03 },
-      { position: pointFromView(1.08, -0.2, 7.4), rotationZ: -0.04 },
-      { position: pointFromView(2.55, 0.28, 8.8), rotationZ: 0.015 },
+      { position: pointFromView(-0.9, -0.24, 8.0), rotationZ: 0.03 },
+      { position: pointFromView(0.94, -0.2, 7.4), rotationZ: -0.04 },
+      { position: pointFromView(0.08, 0.52, 8.2), rotationZ: 0.015 },
     ],
     [],
   );
