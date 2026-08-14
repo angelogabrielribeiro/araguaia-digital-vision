@@ -7,7 +7,6 @@ import { createPortal } from "react-dom";
 import { WhatsappCta } from "@/components/WhatsappCta";
 import { displayShortName, genericWhatsappMessage, site } from "@/config/site";
 
-
 const NAV = [
   { to: "/", label: "Início" },
   { to: "/servicos", label: "Serviços" },
@@ -25,7 +24,6 @@ export function SiteHeader() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
-
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -48,13 +46,24 @@ export function SiteHeader() {
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8">
-        <Link to="/" className="group flex items-center gap-3" onClick={() => setOpen(false)}>
-          <span className="relative flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-tech-deep to-tech">
-            <span className="font-mono text-xs font-bold text-background">CA</span>
+        <Link
+          to="/"
+          aria-label="WVS Informática — início"
+          className="group flex items-center gap-2.5"
+          onClick={() => setOpen(false)}
+        >
+          <span className="relative flex h-9 w-14 shrink-0 items-center justify-center overflow-hidden">
+            <img
+              src={site.media.logo}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-contain drop-shadow-[0_0_10px_rgba(34,211,238,0.18)]"
+              decoding="async"
+            />
           </span>
           <span className="leading-none">
             <span className="block text-sm font-medium text-foreground">{displayShortName}</span>
-            <span className="block font-mono text-[10px] tracking-[0.16em] text-muted-foreground uppercase">
+            <span className="block font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
               {site.location.city} — {site.location.state}
             </span>
           </span>
@@ -154,6 +163,5 @@ export function SiteHeader() {
           document.body,
         )}
     </header>
-
   );
 }
