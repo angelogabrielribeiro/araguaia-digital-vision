@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ServicePage } from "@/components/ServicePage";
-import { serviceByKey } from "@/config/site";
+import { serviceByKey, site } from "@/config/site";
 
 const service = serviceByKey.ti;
 const software = serviceByKey.software;
@@ -9,23 +9,23 @@ const software = serviceByKey.software;
 export const Route = createFileRoute("/ti")({
   head: () => ({
     meta: [
-      { title: "TI e suporte técnico em Conceição do Araguaia (PA) | Suporte remoto" },
+      { title: "TI e suporte técnico em Conceição do Araguaia (PA) | WVS Informática" },
       {
         name: "description",
         content:
           "Suporte técnico, configuração de computadores, redes e sistemas em Conceição do Araguaia (PA) e Couto Magalhães (TO). Atendimento remoto via AnyDesk.",
       },
-      { property: "og:title", content: "TI e suporte técnico — presencial e remoto" },
+      { property: "og:title", content: "TI e suporte técnico — WVS Informática" },
       {
         property: "og:description",
         content:
           "Diagnóstico, configuração e solução de problemas em computadores, redes e sistemas. Suporte remoto quando o caso permite.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "/ti" },
+      { property: "og:url", content: `${site.url}/ti` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/ti" }],
+    links: [{ rel: "canonical", href: `${site.url}/ti` }],
   }),
   component: TiPage,
 });
