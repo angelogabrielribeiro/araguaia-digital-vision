@@ -7,6 +7,7 @@
  */
 
 export const site = {
+  url: "https://wvsinformaticacda.com.br",
   professionalName: "Wangelo Silva dos Santos",
   professionalRole: "Tecnologia da Informação • Suporte • Finanças e Contabilidade",
   shortName: "WVS Informática",
