@@ -14,23 +14,23 @@ import { useReducedMotion } from "@/lib/motion";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "TI, manutenção, finanças e contabilidade em Conceição do Araguaia (PA)" },
+      { title: "TI, manutenção, finanças e contabilidade em Conceição do Araguaia (PA) | WVS Informática" },
       {
         name: "description",
         content:
-          "Profissional de TI e suporte técnico em Conceição do Araguaia (PA), atendendo também Couto Magalhães (TO) e remotamente. Manutenção tecnológica, finanças e contabilidade.",
+          "WVS Informática: TI e suporte técnico em Conceição do Araguaia (PA), atendendo também Couto Magalhães (TO) e remotamente. Manutenção tecnológica, finanças e contabilidade.",
       },
-      { property: "og:title", content: "TI, manutenção, finanças e contabilidade — Conceição do Araguaia (PA)" },
+      { property: "og:title", content: "WVS Informática — TI, manutenção, finanças e contabilidade" },
       {
         property: "og:description",
         content:
           "Suporte técnico presencial e remoto, manutenção de equipamentos, organização financeira e orientação fiscal. Contato direto pelo WhatsApp.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: site.url },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: site.url }],
     scripts: [
       {
         type: "application/ld+json",
@@ -38,6 +38,9 @@ export const Route = createFileRoute("/")({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           name: displayName,
+          url: site.url,
+          image: site.media.portrait,
+          telephone: site.phoneDisplay,
           description: "Serviços de TI e suporte técnico, manutenção tecnológica, finanças e contabilidade.",
           areaServed: [
             { "@type": "City", name: "Conceição do Araguaia" },
