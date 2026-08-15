@@ -1,30 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ServicePage } from "@/components/ServicePage";
-import { serviceByKey } from "@/config/site";
+import { serviceByKey, site } from "@/config/site";
 
 const service = serviceByKey.contabilidade;
 
 export const Route = createFileRoute("/contabilidade")({
   head: () => ({
     meta: [
-      { title: "Contabilidade, impostos e orientação fiscal | Conceição do Araguaia (PA)" },
+      { title: "Contabilidade, impostos e orientação fiscal | WVS Informática" },
       {
         name: "description",
         content:
           "Apoio contábil e tributário: organização de documentos, acompanhamento de obrigações e orientação sobre impostos em linguagem clara.",
       },
-      { property: "og:title", content: "Contabilidade e impostos sem linguagem enrolada" },
+      { property: "og:title", content: "Contabilidade e impostos — WVS Informática" },
       {
         property: "og:description",
         content:
           "Documentos organizados, prazos acompanhados e orientação fiscal direta para pessoa física e empresa.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "/contabilidade" },
+      { property: "og:url", content: `${site.url}/contabilidade` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/contabilidade" }],
+    links: [{ rel: "canonical", href: `${site.url}/contabilidade` }],
   }),
   component: ContabilidadePage,
 });
@@ -69,7 +69,7 @@ function ContabilidadePage() {
           a: "Sim, além de empresas. Muitas dúvidas de pessoa física envolvem imposto de renda, documentos e regularização, e é possível orientar sobre esses pontos.",
         },
         {
-          q: "Vocês entregam as obrigações no meu lugar?",
+          q: "Você entrega as obrigações no meu lugar?",
           a: "O escopo é combinado caso a caso. Em alguns casos faço a organização e a orientação; em outros, acompanho a entrega. Isso fica claro antes de começar.",
         },
         {
