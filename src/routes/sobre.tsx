@@ -12,17 +12,18 @@ import { useReducedMotion } from "@/lib/motion";
 export const Route = createFileRoute("/sobre")({
   head: () => ({
     meta: [
-      { title: "Sobre o profissional | TI, finanças e contabilidade em Conceição do Araguaia" },
+      { title: "Wangelo Silva dos Santos | WVS Informática em Conceição do Araguaia" },
       {
         name: "description",
         content:
-          "Quem atende: profissional de tecnologia da informação em Conceição do Araguaia (PA), com atuação também em finanças, contabilidade e manutenção de equipamentos.",
+          "Conheça Wangelo Silva dos Santos, profissional por trás da WVS Informática, com atuação em TI, manutenção tecnológica, finanças e contabilidade.",
       },
-      { property: "og:title", content: "Sobre o profissional" },
+      { property: "og:title", content: "Wangelo Silva dos Santos — WVS Informática" },
+      { property: "og:description", content: "Conheça o profissional por trás do atendimento da WVS Informática em Conceição do Araguaia (PA)." },
       { property: "og:type", content: "profile" },
-      { property: "og:url", content: "/sobre" },
+      { property: "og:url", content: `${site.url}/sobre` },
     ],
-    links: [{ rel: "canonical", href: "/sobre" }],
+    links: [{ rel: "canonical", href: `${site.url}/sobre` }],
   }),
   component: SobrePage,
 });
