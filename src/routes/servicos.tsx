@@ -11,17 +11,17 @@ import { useReducedMotion } from "@/lib/motion";
 export const Route = createFileRoute("/servicos")({
   head: () => ({
     meta: [
-      { title: "Serviços: TI, manutenção, finanças e contabilidade | Conceição do Araguaia" },
+      { title: "Serviços: TI, manutenção, finanças e contabilidade | WVS Informática" },
       {
         name: "description",
         content:
-          "Todos os serviços em um lugar: suporte de TI, software e sistemas, manutenção tecnológica, finanças e contabilidade. Presencial e remoto.",
+          "Todos os serviços da WVS Informática: suporte de TI, software e sistemas, manutenção tecnológica, finanças e contabilidade. Presencial e remoto.",
       },
-      { property: "og:title", content: "Serviços — tecnologia, finanças e contabilidade" },
+      { property: "og:title", content: "Serviços WVS Informática — tecnologia, finanças e contabilidade" },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/servicos" },
+      { property: "og:url", content: `${site.url}/servicos` },
     ],
-    links: [{ rel: "canonical", href: "/servicos" }],
+    links: [{ rel: "canonical", href: `${site.url}/servicos` }],
   }),
   component: ServicosPage,
 });
