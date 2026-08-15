@@ -22,7 +22,7 @@ export const site = {
     hours: "",
   },
   analytics: {
-    ga4MeasurementId: "",
+    ga4MeasurementId: "G-7K8QX22N5T",
     metaPixelId: "",
     googleSearchConsoleVerification: "",
   },
