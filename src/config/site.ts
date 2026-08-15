@@ -24,7 +24,7 @@ export const site = {
   analytics: {
     ga4MeasurementId: "G-7K8QX22N5T",
     metaPixelId: "",
-    googleSearchConsoleVerification: "",
+    googleSearchConsoleVerification: "8m1d3cQ3PyS0caJYNQJEFXMecOewgUOhHEGsgphokNo",
   },
   media: {
     logo: "https://d2ol7oe51mr4n9.cloudfront.net/user_3HsNrvtADgTST69NIzAyibRE4Ek/c60daf31-6091-4a04-ac53-767925f84eec.png",

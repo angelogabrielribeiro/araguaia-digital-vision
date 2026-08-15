@@ -20,7 +20,9 @@ export function initAnalytics() {
   initialized = true;
 
   const ga4 = site.analytics.ga4MeasurementId;
-  if (ga4) {
+  // O snippet SSR no <head> é o caminho principal. Este bloco fica como fallback
+  // para previews ou integrações que removam os scripts do HTML.
+  if (ga4 && !window.gtag) {
     const script = document.createElement("script");
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${ga4}`;

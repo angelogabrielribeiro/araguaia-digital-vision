@@ -101,9 +101,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const ga4 = site.analytics.ga4MeasurementId;
+  const ga4Snippet = ga4
+    ? `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag("js", new Date());
+gtag("config", ${JSON.stringify(ga4)}, { send_page_view: false });`
+    : "";
+
   return (
     <html lang="pt-BR">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+        {ga4 ? (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`} />
+            <script dangerouslySetInnerHTML={{ __html: ga4Snippet }} />
+          </>
+        ) : null}
+      </head>
       <body>{children}<Scripts /></body>
     </html>
   );
