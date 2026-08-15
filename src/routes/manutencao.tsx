@@ -1,30 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ServicePage } from "@/components/ServicePage";
-import { serviceByKey } from "@/config/site";
+import { serviceByKey, site } from "@/config/site";
 
 const service = serviceByKey.manutencao;
 
 export const Route = createFileRoute("/manutencao")({
   head: () => ({
     meta: [
-      { title: "Manutenção de equipamentos de tecnologia para empresas | Conceição do Araguaia" },
+      { title: "Manutenção de equipamentos de tecnologia | WVS Informática" },
       {
         name: "description",
         content:
           "Manutenção preventiva e corretiva de equipamentos de tecnologia para empresas em Conceição do Araguaia (PA) e Couto Magalhães (TO).",
       },
-      { property: "og:title", content: "Manutenção tecnológica para empresas" },
+      { property: "og:title", content: "Manutenção tecnológica — WVS Informática" },
       {
         property: "og:description",
         content:
           "Inspeção, limpeza técnica, troca de componentes e testes: equipamentos devolvidos em condição confiável de operação.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "/manutencao" },
+      { property: "og:url", content: `${site.url}/manutencao` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/manutencao" }],
+    links: [{ rel: "canonical", href: `${site.url}/manutencao` }],
   }),
   component: ManutencaoPage,
 });
