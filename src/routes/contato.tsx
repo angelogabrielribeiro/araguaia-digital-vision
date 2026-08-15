@@ -11,22 +11,22 @@ import { useReducedMotion } from "@/lib/motion";
 export const Route = createFileRoute("/contato")({
   head: () => ({
     meta: [
-      { title: "Contato | Atendimento em Conceição do Araguaia (PA) e remoto" },
+      { title: "Contato e orçamento pelo WhatsApp | WVS Informática" },
       {
         name: "description",
         content:
-          "Fale direto pelo WhatsApp. Atendimento em Conceição do Araguaia (PA), Couto Magalhães (TO) e remotamente para serviços que permitem.",
+          "Fale direto pelo WhatsApp com a WVS Informática. Atendimento em Conceição do Araguaia (PA), Couto Magalhães (TO) e remotamente quando o serviço permite.",
       },
-      { property: "og:title", content: "Contato — WhatsApp direto" },
+      { property: "og:title", content: "Contato WVS Informática — WhatsApp direto" },
       {
         property: "og:description",
-        content: "Descreva a sua situação e receba uma avaliação honesta do que dá para fazer.",
+        content: "Descreva a sua situação e receba uma avaliação direta do que pode ser feito.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/contato" },
+      { property: "og:url", content: `${site.url}/contato` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/contato" }],
+    links: [{ rel: "canonical", href: `${site.url}/contato` }],
   }),
   component: ContatoPage,
 });
