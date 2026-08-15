@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://wvsinformaticacda.com.br/sitemap.xml
