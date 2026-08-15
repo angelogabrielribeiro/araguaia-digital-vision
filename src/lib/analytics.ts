@@ -96,11 +96,28 @@ export function getUtms(): Record<string, string> {
   }
 }
 
-/** Evento de clique no WhatsApp, segmentado por serviço e por local do botão. */
+/**
+ * Conversão principal do site: clique para iniciar atendimento no WhatsApp.
+ * Mantém o evento detalhado e envia também eventos padrão de lead para GA4/Meta,
+ * facilitando relatórios e futura otimização de campanhas.
+ */
 export function trackWhatsappClick(serviceKey: string, location: string) {
   if (typeof window === "undefined") return;
-  const payload = { service: serviceKey, cta_location: location, ...getUtms() };
+
+  const payload = {
+    method: "whatsapp",
+    service: serviceKey,
+    cta_location: location,
+    ...getUtms(),
+  };
+
+  // Evento detalhado para análise de qual serviço/CTA gerou a conversa.
   window.gtag?.("event", "whatsapp_click", payload);
   window.fbq?.("trackCustom", "WhatsAppClick", payload);
   window.dataLayer?.push({ event: "whatsapp_click", ...payload });
+
+  // Conversão padrão usada para relatórios e otimização de aquisição.
+  window.gtag?.("event", "generate_lead", payload);
+  window.fbq?.("track", "Lead", payload);
+  window.dataLayer?.push({ event: "generate_lead", ...payload });
 }
