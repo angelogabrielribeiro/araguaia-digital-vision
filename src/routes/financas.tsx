@@ -1,30 +1,30 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ServicePage } from "@/components/ServicePage";
-import { serviceByKey } from "@/config/site";
+import { serviceByKey, site } from "@/config/site";
 
 const service = serviceByKey.financas;
 
 export const Route = createFileRoute("/financas")({
   head: () => ({
     meta: [
-      { title: "Serviços financeiros e organização de finanças | Conceição do Araguaia (PA)" },
+      { title: "Serviços financeiros e organização de finanças | WVS Informática" },
       {
         name: "description",
         content:
           "Organização de lançamentos, controle de entradas e saídas, conciliação e apoio na rotina financeira. Atendimento presencial e remoto.",
       },
-      { property: "og:title", content: "Finanças organizadas, decisão mais tranquila" },
+      { property: "og:title", content: "Finanças organizadas — WVS Informática" },
       {
         property: "og:description",
         content:
           "Apoio para colocar a rotina financeira em ordem: lançamentos, conciliação, controles e relatórios simples do período.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "/financas" },
+      { property: "og:url", content: `${site.url}/financas` },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "/financas" }],
+    links: [{ rel: "canonical", href: `${site.url}/financas` }],
   }),
   component: FinancasPage,
 });
