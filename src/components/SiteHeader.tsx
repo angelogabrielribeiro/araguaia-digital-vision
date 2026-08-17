@@ -70,7 +70,7 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {NAV.slice(1, 7).map((item) => (
+          {NAV.slice(1).map((item) => (
             <Link
               key={item.to}
               to={item.to}
