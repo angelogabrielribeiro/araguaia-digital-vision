@@ -120,7 +120,7 @@ function ContatoPage() {
             </p>
             <div className="mt-8 grid gap-px overflow-hidden rounded-xl border border-border bg-border sm:grid-cols-2">
               {services.map((s) => (
-                <div key={s.key} className="flex flex-col justify-between gap-4 bg-background p-5">
+                <div key={s.key} className="flex flex-col justify-between gap-4 bg-background p-5 sm:last:col-span-2">
                   <div>
                     <h3 className="text-base text-foreground">{s.label}</h3>
                     <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
