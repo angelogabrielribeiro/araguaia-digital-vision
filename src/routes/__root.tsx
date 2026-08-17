@@ -19,6 +19,25 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { displayName, site } from "@/config/site";
 import { captureUtms, initAnalytics, trackPageView } from "@/lib/analytics";
 
+
+const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "form-action 'none'",
+  "frame-src 'none'",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com",
+  "script-src-attr 'none'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https://d2ol7oe51mr4n9.cloudfront.net https://*.google-analytics.com https://www.google.com",
+  "media-src 'self' blob: https://d2ol7oe51mr4n9.cloudfront.net",
+  "connect-src 'self' https://*.google-analytics.com https://www.googletagmanager.com",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "upgrade-insecure-requests",
+].join("; ");
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -113,6 +132,7 @@ gtag("config", ${JSON.stringify(ga4)}, { send_page_view: false });`
   return (
     <html lang="pt-BR">
       <head>
+        <meta httpEquiv="Content-Security-Policy" content={CONTENT_SECURITY_POLICY} />
         <HeadContent />
         {ga4 ? (
           <>
