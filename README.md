@@ -1,31 +1,35 @@
 # Araguaia Digital
 
-Site institucional interativo para apresentação profissional de serviços de tecnologia, manutenção, finanças e contabilidade, com foco em experiência visual avançada e geração de contatos.
+Site institucional interativo criado para apresentar serviços profissionais com uma experiência visual mais rica do que um site corporativo tradicional, combinando **conteúdo, motion design, WebGL e 3D**.
 
-🔗 **Demo:** https://araguaia-digital-vision.lovable.app
+**Demo:** https://araguaia-digital-vision.lovable.app
 
-## Sobre o projeto
+## Visão geral
 
-O Araguaia Digital foi criado para transformar um site institucional tradicional em uma experiência mais memorável, combinando conteúdo profissional com motion design, WebGL e navegação responsiva.
+O Araguaia Digital apresenta serviços nas áreas de tecnologia, manutenção, finanças e contabilidade em uma experiência responsiva orientada à autoridade e geração de contato.
 
-O projeto trabalha autoridade, apresentação de serviços e conversão via WhatsApp sem depender de backend desnecessário.
+A proposta técnica foi integrar recursos visuais avançados sem transformar o projeto em uma demonstração 3D desconectada do conteúdo. As animações, cenas e transições acompanham a narrativa das páginas e os CTAs de cada serviço.
 
-## Destaques
+## Funcionalidades e destaques
 
-- Experiência responsiva desktop/mobile
-- Páginas separadas por área de serviço
-- CTAs contextuais para WhatsApp
-- Interações e transições com Framer Motion
-- Cenas 3D com Three.js, React Three Fiber e Drei
-- Estrutura preparada para SEO e mensuração
-- Suporte a `prefers-reduced-motion`
-- Organização centralizada de dados de contato e configuração
+- navegação responsiva para desktop e mobile;
+- páginas específicas por área de serviço;
+- CTAs contextuais para WhatsApp;
+- motion design com Framer Motion;
+- cenas 3D com Three.js, React Three Fiber e Drei;
+- uso de WebGL integrado à interface;
+- estrutura preparada para SEO e mensuração;
+- configuração centralizada de dados de contato;
+- suporte a `prefers-reduced-motion`;
+- adaptação de complexidade visual para diferentes tamanhos de tela.
 
 ## Stack
 
 - React 19
 - TypeScript
-- TanStack Start / Router / Query
+- TanStack Start
+- TanStack Router
+- TanStack Query
 - Vite
 - Tailwind CSS
 - Three.js
@@ -34,21 +38,16 @@ O projeto trabalha autoridade, apresentação de serviços e conversão via What
 - Framer Motion
 - Zod
 
-## Objetivos técnicos
+## Decisões técnicas
 
-Este projeto explora:
+O projeto busca equilibrar impacto visual e usabilidade. Elementos 3D e animações são tratados como parte da experiência, enquanto informações de serviço, navegação e contato permanecem acessíveis e legíveis.
 
-- integração de WebGL em interfaces reais;
-- performance de experiências 3D no navegador;
-- responsividade sem eliminar interatividade;
-- arquitetura de componentes reutilizáveis;
-- motion design aplicado à narrativa de uma interface;
-- desenvolvimento de páginas orientadas à conversão.
+A arquitetura também evita backend desnecessário para um site institucional, mantendo a solução mais simples onde complexidade adicional não agrega valor ao produto.
 
-## Rodando localmente
+## Executando localmente
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/angelogabrielribeiro/araguaia-digital-vision.git
 cd araguaia-digital-vision
 npm install
 npm run dev
@@ -56,4 +55,12 @@ npm run dev
 
 ## Status
 
-✅ **Versão demonstrável publicada**, com evolução contínua de conteúdo, performance e experiências visuais.
+**Versão demonstrável publicada.** O projeto continua recebendo refinamentos de conteúdo, performance e experiência visual.
+
+## Objetivos técnicos
+
+Este projeto explora integração de WebGL em interfaces reais, performance de experiências 3D no navegador, responsividade, arquitetura de componentes reutilizáveis e motion design aplicado à narrativa de uma interface.
+
+---
+
+Desenvolvido por **Angelo Gabriel Ribeiro Santos**.
