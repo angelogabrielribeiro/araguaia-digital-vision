@@ -1,14 +1,24 @@
-# Araguaia Digital
+# WVS Informática
 
-Site institucional interativo criado para apresentar serviços profissionais com uma experiência visual mais rica do que um site corporativo tradicional, combinando **conteúdo, motion design, WebGL e 3D**.
+Site institucional profissional desenvolvido para **Wangelo Silva dos Santos**, reunindo serviços de **Tecnologia da Informação, suporte técnico, manutenção tecnológica, finanças e contabilidade** em uma experiência web responsiva, interativa e visualmente imersiva.
 
-**Demo:** https://araguaia-digital-vision.lovable.app
+**Site em produção:** https://wvsinformaticacda.com.br
+
+> O repositório mantém o nome técnico `araguaia-digital-vision`, usado durante o desenvolvimento do projeto. A identidade comercial publicada é **WVS Informática**.
 
 ## Visão geral
 
-O Araguaia Digital apresenta serviços nas áreas de tecnologia, manutenção, finanças e contabilidade em uma experiência responsiva orientada à autoridade e geração de contato.
+O projeto foi criado para apresentar serviços profissionais, fortalecer presença digital e transformar visitas em contatos qualificados pelo WhatsApp. A experiência combina conteúdo institucional, scroll storytelling, motion design e elementos 3D/WebGL sem sacrificar legibilidade ou navegação.
 
-A proposta técnica foi integrar recursos visuais avançados sem transformar o projeto em uma demonstração 3D desconectada do conteúdo. As animações, cenas e transições acompanham a narrativa das páginas e os CTAs de cada serviço.
+O atendimento é apresentado para **Conceição do Araguaia (PA)**, **Couto Magalhães (TO)** e suporte remoto para todo o Brasil.
+
+## Áreas de atuação
+
+- TI e suporte técnico;
+- software e sistemas;
+- manutenção tecnológica;
+- finanças;
+- contabilidade e impostos.
 
 ## Funcionalidades e destaques
 
@@ -17,11 +27,14 @@ A proposta técnica foi integrar recursos visuais avançados sem transformar o p
 - CTAs contextuais para WhatsApp;
 - motion design com Framer Motion;
 - cenas 3D com Three.js, React Three Fiber e Drei;
-- uso de WebGL integrado à interface;
-- estrutura preparada para SEO e mensuração;
-- configuração centralizada de dados de contato;
+- WebGL integrado à narrativa da interface;
+- mídia real do profissional;
+- SEO técnico com Open Graph, sitemap e robots.txt;
+- Google Analytics 4;
+- verificação do Google Search Console;
+- configuração centralizada de domínio, contato, localização e mídia;
 - suporte a `prefers-reduced-motion`;
-- adaptação de complexidade visual para diferentes tamanhos de tela.
+- adaptação da complexidade visual para diferentes tamanhos de tela.
 
 ## Stack
 
@@ -38,11 +51,11 @@ A proposta técnica foi integrar recursos visuais avançados sem transformar o p
 - Framer Motion
 - Zod
 
-## Decisões técnicas
+## Arquitetura
 
-O projeto busca equilibrar impacto visual e usabilidade. Elementos 3D e animações são tratados como parte da experiência, enquanto informações de serviço, navegação e contato permanecem acessíveis e legíveis.
+Dados importantes do site, como domínio, nome profissional, WhatsApp, localização, mídia e identificadores de analytics, ficam centralizados em `src/config/site.ts`. Isso evita duplicação de informações e simplifica manutenção e evolução do projeto.
 
-A arquitetura também evita backend desnecessário para um site institucional, mantendo a solução mais simples onde complexidade adicional não agrega valor ao produto.
+Os elementos 3D e as animações são usados como parte da experiência de navegação, enquanto conteúdo, contato e serviços continuam acessíveis mesmo em dispositivos com menor capacidade gráfica ou preferência por movimento reduzido.
 
 ## Executando localmente
 
@@ -55,11 +68,11 @@ npm run dev
 
 ## Status
 
-**Versão demonstrável publicada.** O projeto continua recebendo refinamentos de conteúdo, performance e experiência visual.
+**Projeto publicado em domínio próprio e em uso.** O código continua disponível para manutenção, refinamentos de performance, conteúdo e experiência visual.
 
 ## Objetivos técnicos
 
-Este projeto explora integração de WebGL em interfaces reais, performance de experiências 3D no navegador, responsividade, arquitetura de componentes reutilizáveis e motion design aplicado à narrativa de uma interface.
+Este projeto explora desenvolvimento de uma presença digital real com domínio próprio, SEO, analytics, WebGL, experiências 3D, responsividade, arquitetura de componentes reutilizáveis e motion design aplicado a um produto institucional.
 
 ---
 
